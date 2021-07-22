@@ -3,15 +3,19 @@ import menu
 # variables
 products = []
 couriers = []
+orders = []
 products_file = 'products.txt'
 couriers_file = 'couriers.txt'
+orders_file = 'orders.json'
 
 # populate products and couriers lists
 menu.populate_items(products_file, products)
 menu.populate_items(couriers_file, couriers)
+menu.populate_items(orders_file, orders)
 
 print(f'Here is a list of your products: {products}')
 print(f'Here is a list of your couriers: {couriers}')
+print(f'Here is a list of your orders: {orders}')
 
 run_menu = True
 
@@ -22,8 +26,9 @@ while run_menu:
     
     # exits the application and saves to .txt files    
     if (main_menu_choice == 0):
-        menu.save_items(products_file, 'w', products)
-        menu.save_items(couriers_file, 'w', couriers)
+        menu.save_items(products_file, products)
+        menu.save_items(couriers_file, couriers)
+        menu.save_items(orders_file, orders, True)
         print('\nExiting and saving application! See you next time.')
         run_menu = False
     
@@ -42,7 +47,7 @@ while run_menu:
             
         # retrieve the current product list
         elif (sub_menu_choice == 2):
-            print(f'\nHere is a list of products: {products}.\n')
+            menu.show_items('product', products)
             
         # update a product chosen from the product list
         elif (sub_menu_choice == 3):
@@ -69,7 +74,7 @@ while run_menu:
             
         # retreiving the current courier list
         elif (sub_menu_choice == 2):
-            print(f'\nHere is a list of couriers: {couriers}.\n')
+            menu.show_items('courier', couriers)
             
         # updating a courier chosen from the courier list
         elif (sub_menu_choice == 3):
@@ -77,5 +82,33 @@ while run_menu:
             
         # deleting a courier from the courier list
         elif (sub_menu_choice == 4):
-            menu.remove_item('courier', couriers)    
+            menu.remove_item('courier', couriers)
+    
+    # order options    
+    elif (main_menu_choice == 3):
+        
+        # user chooses an option
+        sub_menu_choice = sub_menu_choice = menu.sub_menu_choice('order')
+                
+        # return to the previous menu
+        if (sub_menu_choice == 0):
+            print('\nReturning to main Menu')
+            continue
+        
+        # adding a new order to the order list    
+        elif (sub_menu_choice == 1):
+            menu.add_order(couriers, orders)
+            print(f'Here are your orders: {orders}')
+            
+        # retreiving the current order list
+        elif (sub_menu_choice == 2):
+            menu.show_items('order', orders)
+            
+        # updating a order chosen from the order list
+        elif (sub_menu_choice == 3):
+            menu.update_item('order', orders)
+            
+        # deleting a order from the order list
+        elif (sub_menu_choice == 4):
+            menu.remove_item('order', orders)    
 exit()

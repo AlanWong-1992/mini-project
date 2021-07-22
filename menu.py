@@ -1,3 +1,7 @@
+import json
+import random
+from typing import List, Dict
+
 # main menu, user chooses an option 
 def main_menu_choice():
     input_is_correct = False
@@ -8,8 +12,9 @@ def main_menu_choice():
                                 '0) Exit this Application\n'
                                 '1) See Product Menu Options\n'
                                 '2) See Courier Options\n'
+                                '3) See Order Options\n'
                                 'Please enter a number from the options above: '))
-            if (type(choice) == int and choice <=2 and choice >=0):
+            if (type(choice) == int and choice <=3 and choice >=0):
                 input_is_correct = True
             else:
                 print('You need to pick one of the numbers above')
@@ -48,32 +53,56 @@ def sub_menu_choice(products_or_couriers):
     return choice
 
 # writing list items to files 
-def save_items(file, mode, items):
-    try:
-        with open(file, mode) as fh:
-            for item in items:
-                fh.write(f'{item}\n')
-    except Exception as e:
+def save_items(file, items, to_json = False):
+    # if to_json if false then we want to save each item in items in a txt file
+    # else if to_json is true we want to save in a json file as each item in items will be a Dict
+    if (to_json == False):
+        try:
+            with open(file, 'w') as fh:
+                for item in items:
+                    fh.write(f'{item}\n')
+        except Exception as e:
+                print(f'There is an error {str(e)}')
+    elif (to_json == True):
+        try:
+            with open(file, 'w') as fh:
+                json.dump(items, fh, indent=4)
+        except Exception as e:
             print(f'There is an error {str(e)}')
+    else:
+        print('You need to enter a correct json value')    
 
 # reading files and populate list items            
-def populate_items(file, items):
-    try:
-        with open(file, 'r') as fh:
-            all_lines = fh.readlines()
-            for line in all_lines:
-                if(line != '\n'): 
-                    items.append(line.rstrip())
-    except Exception as e:
-            print(f'There is an error {str(e)}')
-            input_is_correct = False
-
+def populate_items(file, items, to_json = False):
+    # if to_json if false then we will read from a txt file
+    # else if to_json is true we will read from a json file
+    if (to_json == False):
+        try:
+            with open(file, 'r') as fh:
+                all_lines = fh.readlines()
+                for line in all_lines:
+                    if(line != '\n'): 
+                        items.append(line.rstrip())
+        except Exception as e:
+                print(f'There is an error {str(e)}')
+                input_is_correct = False
+    elif (to_json == True):
+        try:
+            with open(file, 'r') as fh:
+                items = json.load(fh, indent=4)
+        except Exception as e:
+                print(f'There is an error {str(e)}')
+                input_is_correct = False
+        
 # add item to items, name is either product or courier (str) and items is a list
 def add_item(name, items):
     item = str(input(f'\nPlease enter a new {name} name: '))
     items.append(item)
     print(f'Updated {name}s: {items}')
 
+def show_items(name: str, items: List):
+    print(f'Here\'s a list of the {name}s \n{items}')
+    
 # update an existing item with a new name from the list by choosing an index    
 def update_item(name, items):
     print(f'\nHere is a list of {name}s: {items}.\n')
@@ -106,3 +135,21 @@ def remove_item(name, items):
             
     items.pop(index)
     print(f'Updated {name}s: {items}')
+    
+def add_order(couriers: List[str], items: List[Dict]):
+    print(f'Please enter the details of your order')
+    customer_name = input('What is your full name? ')
+    customer_address = input('What is your address? ')
+    customer_phone_number = input('What is your phone number? ')
+    courier = random.choice(couriers)
+    status = 'preparing'
+    
+    order = {
+        'customer_name': customer_name,
+        'customer_address': customer_address,
+        'customer_phone_number': customer_phone_number,
+        'courier': courier,
+        'status': status
+    }
+    
+    items.append(order)
