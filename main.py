@@ -1,47 +1,81 @@
-products = ['Coke Zero', 'Sprite', 'Fanta', 'Pepsi']
+import menu
+
+# variables
+products = []
+couriers = []
+products_file = 'products.txt'
+couriers_file = 'couriers.txt'
+
+# populate products and couriers lists
+menu.populate_items(products_file, products)
+menu.populate_items(couriers_file, couriers)
+
+print(f'Here is a list of your products: {products}')
+print(f'Here is a list of your couriers: {couriers}')
 
 run_menu = True
 
 while run_menu:
+    '''Get user input and decide what options to take'''
     
-    # first user input is to either exit the application or to see product menu options
-    print('\nPlease choose an option by selecting a number:\n0) Exit this menu\n1) See Product Menu Options')
-    choice_1 = int(input('Please enter a number from the options above: '))
-    if (choice_1 == 0):
-        print('\nExiting Application')
+    main_menu_choice = menu.main_menu_choice()
+    
+    # exits the application and saves to .txt files    
+    if (main_menu_choice == 0):
+        menu.save_items(products_file, 'w', products)
+        menu.save_items(couriers_file, 'w', couriers)
+        print('\nExiting and saving application! See you next time.')
         run_menu = False
-    elif (choice_1 == 1):
-        # 5 different options for CRUD and to return to previous menu
-        print('\nPlease choose an option by selecting a number:\n0) Exit this menu\n1) Add a product\n2) View all products\n3) Update a Product\n4) Delete a product\n')
-        choice_2 = int(input('Please select a number from the above options: '))
-        
-        # 0 means returning to the previous menu
-        if (choice_2 == 0):
+    
+    # product options
+    elif (main_menu_choice == 1):
+        sub_menu_choice = menu.sub_menu_choice('product')
+            
+        # returns to previous menu
+        if (sub_menu_choice == 0):
             print('\nReturning to main Menu')
             continue
         
-        # 1 means Creating and adding a new product to the product list    
-        elif (choice_2 == 1):
-            new_product_name = str(input('\nPlease enter a new product name: '))
-            products.append(new_product_name)
-            print(f'Updated products: {products}')
+        # add a new product to products
+        elif (sub_menu_choice == 1):
+            menu.add_item('product', products)
             
-        # 2 means Retreiving the current product list
-        elif (choice_2 == 2):
+        # retrieve the current product list
+        elif (sub_menu_choice == 2):
             print(f'\nHere is a list of products: {products}.\n')
             
-        # 3 means Updating a product chosen from the product list
-        elif (choice_2 == 3):
-            print(f'\nHere is a list of products: {products}.\n')
-            index_to_update = int(input('Choose the index of the item you want to change (first item starts at 0): '))
-            new_product_name = str(input('Please choose a new product name: '))
-            products[index_to_update] = new_product_name
-            print(f'Updated products: {products}')
+        # update a product chosen from the product list
+        elif (sub_menu_choice == 3):
+            menu.update_item('product', products)
             
-        # 4 means Deleting a product from the product list
-        elif (choice_2 == 4):
-            print(f'\nHere is a list of products: {products}.\n')
-            index_to_delete = int(input('Choose the index of the item you want to Delete: '))
-            products.pop(index_to_delete)
-            print(f'Updated products: {products}')
+        # deleting a product from the product list
+        elif (sub_menu_choice == 4):
+            menu.remove_item('product', products)
+    
+    # courier options    
+    elif (main_menu_choice == 2):
+        
+        # user chooses an option
+        sub_menu_choice = sub_menu_choice = menu.sub_menu_choice('courier')
+                
+        # return to the previous menu
+        if (sub_menu_choice == 0):
+            print('\nReturning to main Menu')
+            continue
+        
+        # adding a new courier to the courier list    
+        elif (sub_menu_choice == 1):
+            menu.add_item('courier', couriers)
+            
+        # retreiving the current courier list
+        elif (sub_menu_choice == 2):
+            print(f'\nHere is a list of couriers: {couriers}.\n')
+            
+        # updating a courier chosen from the courier list
+        elif (sub_menu_choice == 3):
+            menu.update_item('courier', couriers)
+            
+        # deleting a courier from the courier list
+        elif (sub_menu_choice == 4):
+            menu.remove_item('courier', couriers)    
 exit()
