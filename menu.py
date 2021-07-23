@@ -33,7 +33,7 @@ def sub_menu_choice(products_or_couriers):
     while input_is_correct == False:
         try:
             choice = int(input('\nPlease choose an option by selecting a number:\n'
-                                '0) Ret, either product or courier so print statement are either product or courierurn to main menu\n'
+                                '0) Return to previous menu\n'
                                 f'1) Add a {products_or_couriers}\n'
                                 f'2) View all {products_or_couriers}s\n'
                                 f'3) Update a {products_or_couriers}\n'
@@ -53,7 +53,7 @@ def sub_menu_choice(products_or_couriers):
     return choice
 
 # writing list items to files 
-def save_items(file, items, to_json = False):
+def write_to_file(file, items, to_json = False):
     # if to_json if false then we want to save each item in items in a txt file
     # else if to_json is true we want to save in a json file as each item in items will be a Dict
     if (to_json == False):
@@ -73,23 +73,32 @@ def save_items(file, items, to_json = False):
         print('You need to enter a correct json value')    
 
 # reading files and populate list items            
-def populate_items(file, items, to_json = False):
+def read_from_file(file, to_json = False):
     # if to_json if false then we will read from a txt file
     # else if to_json is true we will read from a json file
     if (to_json == False):
         try:
             with open(file, 'r') as fh:
                 all_lines = fh.readlines()
+                items = []
                 for line in all_lines:
                     if(line != '\n'): 
                         items.append(line.rstrip())
+                return items        
         except Exception as e:
                 print(f'There is an error {str(e)}')
                 input_is_correct = False
     elif (to_json == True):
+        print('populating items using JSON')
         try:
             with open(file, 'r') as fh:
-                items = json.load(fh, indent=4)
+                parsed = json.load(fh)
+                if(parsed is not None):
+                    return json.load(fh)
+                elif(parsed is None): 
+                    return []
+                else:
+                   print('There is a problem with the application please try restarting') 
         except Exception as e:
                 print(f'There is an error {str(e)}')
                 input_is_correct = False
@@ -101,7 +110,9 @@ def add_item(name, items):
     print(f'Updated {name}s: {items}')
 
 def show_items(name: str, items: List):
-    print(f'Here\'s a list of the {name}s \n{items}')
+    print(f'Here\'s a list of the {name}s\n')
+    for item in items:
+        print(item)
     
 # update an existing item with a new name from the list by choosing an index    
 def update_item(name, items):

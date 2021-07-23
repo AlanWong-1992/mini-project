@@ -1,21 +1,16 @@
 import menu
 
-# variables
-products = []
-couriers = []
-orders = []
-products_file = 'products.txt'
-couriers_file = 'couriers.txt'
-orders_file = 'orders.json'
+# populating lists from files
+products_file = './products.txt'
+couriers_file = './couriers.txt'
+orders_file = './orders.json'
+products = menu.read_from_file(products_file)
+couriers = menu.read_from_file(couriers_file)
+orders = menu.read_from_file(orders_file, to_json=True)
 
-# populate products and couriers lists
-menu.populate_items(products_file, products)
-menu.populate_items(couriers_file, couriers)
-menu.populate_items(orders_file, orders)
-
-print(f'Here is a list of your products: {products}')
-print(f'Here is a list of your couriers: {couriers}')
-print(f'Here is a list of your orders: {orders}')
+# print(f'Products is a {type(products)}. Here is a list of your products: {products}')
+# print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
+# print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
 
 run_menu = True
 
@@ -26,9 +21,9 @@ while run_menu:
     
     # exits the application and saves to .txt files    
     if (main_menu_choice == 0):
-        menu.save_items(products_file, products)
-        menu.save_items(couriers_file, couriers)
-        menu.save_items(orders_file, orders, True)
+        menu.write_to_file(products_file, products)
+        menu.write_to_file(couriers_file, couriers)
+        menu.write_to_file(orders_file, orders, to_json=True)
         print('\nExiting and saving application! See you next time.')
         run_menu = False
     
@@ -88,7 +83,7 @@ while run_menu:
     elif (main_menu_choice == 3):
         
         # user chooses an option
-        sub_menu_choice = sub_menu_choice = menu.sub_menu_choice('order')
+        sub_menu_choice = menu.sub_menu_choice('order')
                 
         # return to the previous menu
         if (sub_menu_choice == 0):
