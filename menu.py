@@ -1,5 +1,6 @@
 import json
 import random
+import shortuuid
 from typing import List, Dict
 
 # main menu, user chooses an option 
@@ -85,8 +86,9 @@ def read_from_file(file, to_json = False):
                     if(line != '\n'): 
                         items.append(line.rstrip())
                 return items        
-        except Exception as e:
-                print(f'There is an error {str(e)}')
+        except FileNotFoundError as fnfe:
+                print(f'Your file was not found')
+                return []
                 input_is_correct = False
     elif (to_json == True):
         print('populating items using JSON')
@@ -94,13 +96,14 @@ def read_from_file(file, to_json = False):
             with open(file, 'r') as fh:
                 parsed = json.load(fh)
                 if(parsed is not None):
-                    return json.load(fh)
+                    return parsed
                 elif(parsed is None): 
                     return []
                 else:
                    print('There is a problem with the application please try restarting') 
-        except Exception as e:
-                print(f'There is an error {str(e)}')
+        except FileNotFoundError as fnfe:
+                print(f'Your file was not found')
+                return []
                 input_is_correct = False
         
 # add item to items, name is either product or courier (str) and items is a list
@@ -111,8 +114,8 @@ def add_item(name, items):
 
 def show_items(name: str, items: List):
     print(f'Here\'s a list of the {name}s\n')
-    for item in items:
-        print(item)
+    for index, item in enumerate(items):
+        print(f'[{index}] - {item}')
     
 # update an existing item with a new name from the list by choosing an index    
 def update_item(name, items):
@@ -146,16 +149,21 @@ def remove_item(name, items):
             
     items.pop(index)
     print(f'Updated {name}s: {items}')
+
+def create_order_id():
+    return shortuuid.uuid()
     
-def add_order(couriers: List[str], items: List[Dict]):
+def add_order(couriers: List[str], items: List[Dict], create_order_id):
     print(f'Please enter the details of your order')
+    order_id = create_order_id()
     customer_name = input('What is your full name? ')
     customer_address = input('What is your address? ')
     customer_phone_number = input('What is your phone number? ')
-    courier = random.choice(couriers)
+    courier = random.choice(couriers) if len(couriers) > 0 else 'A courier will be assigned later'
     status = 'preparing'
     
     order = {
+        'order_id': order_id,
         'customer_name': customer_name,
         'customer_address': customer_address,
         'customer_phone_number': customer_phone_number,
@@ -164,3 +172,72 @@ def add_order(couriers: List[str], items: List[Dict]):
     }
     
     items.append(order)
+
+def update_order(id: str, orders: List[Dict]):
+    # show user the list of orders they can update
+    for index, order in enumerate(orders):
+        print(f'[{index}] - {order}')
+
+    # loop to choose an order to change
+    change_order = True
+    while change_order:
+        index = input('Choose the index of the item you want to change or "q" to return to main menu')
+        
+        if(index.lower() == 'q'): return
+        
+        try:
+            index = int(index)
+            if(index < 0 or index > len(orders) - 1):
+                print('You need to choose a valid number from the orders list')
+            else:
+                # loop for user to choose a field to change
+                change_order_details = True
+                while change_order_details:
+                    field_detail = input('\nWhat would you like to update?\n'
+                                                '1) The customers full name\n'
+                                                '2) The customers address\n'
+                                                '3) The customers phone number\n'
+                                                '4) The courier to deliver the order\n'
+                                                '5) The status of the order\n'
+                                                '6) Nothing return to main menu\n')
+                    try:
+                        field_detail = int(field_detail)
+                    except ValueError as ve:
+                        print('You need to enter a valid number')
+                        continue
+                    
+                    if (field_detail >= 1 and field_detail <= 6):
+                        if field_detail == 1:
+                            new_field_detail = input('Enter a new full name: ')
+                            orders[index]['customer_name'] = new_field_detail
+                            print(f'The full name has been updated to {new_field_detail}')
+                        if field_detail == 2:
+                            new_field_detail = input('Enter a new address: ')
+                            orders[index]['customer_address'] = new_field_detail
+                            print(f'The address has been updated to {new_field_detail}')
+                        if field_detail == 3:
+                            new_field_detail = input('Enter a new phone number: ')
+                            orders[index]['customer_phone_number'] = new_field_detail
+                            print(f'The phone number has been updated to {new_field_detail}')
+                        if field_detail == 4:
+                            new_field_detail = input('Enter a new courier: ')
+                            orders[index]['courier'] = new_field_detail
+                            print(f'The courier has been updated to {new_field_detail}')
+                        if field_detail == 5:
+                            new_field_detail = input('Enter a new status: ')
+                            orders[index]['status'] = new_field_detail
+                            print(f'The order status has been updated to {new_field_detail}')
+                        if field_detail == 6:
+                            change_order_details = False
+                            print(f'Returning to main menu')
+                    else:
+                        print('You need to pick a valid option')
+                        
+                return
+        except ValueError as ve:
+            print('You need to enter a correct value')
+                
+
+    
+    
+    
