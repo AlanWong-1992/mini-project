@@ -174,69 +174,83 @@ def add_order(couriers: List[str], items: List[Dict], create_order_id):
     items.append(order)
 
 def update_order(id: str, orders: List[Dict]):
+    num_of_orders = len(orders)
     # show user the list of orders they can update
-    for index, order in enumerate(orders):
-        print(f'[{index}] - {order}')
+    show_items('order', orders)
 
     # loop to choose an order to change
     change_order = True
     while change_order:
-        index = input('Choose the index of the item you want to change or "q" to return to main menu')
+        order_number = order_to_change(num_of_orders)
         
-        if(index.lower() == 'q'): return
+        if(order_number == False): break
         
+        selected_field = order_field_choices()
+        
+        change_order_details = update_order_field(selected_field, order_number, orders)
+        
+        if (change_order_details) == False: break
+
+def order_to_change(num_orders: int):
+    correct_input = False
+    while correct_input == False:
+        index = input('Choose the index of the item you want to change or "q" to return to main menu: ')
+    
+        if(index.lower() == 'q'): return False
         try:
             index = int(index)
-            if(index < 0 or index > len(orders) - 1):
-                print('You need to choose a valid number from the orders list')
+            if(index >= 0 and index <= num_orders - 1):
+                correct_input = True
+                return index
             else:
-                # loop for user to choose a field to change
-                change_order_details = True
-                while change_order_details:
-                    field_detail = input('\nWhat would you like to update?\n'
-                                                '1) The customers full name\n'
-                                                '2) The customers address\n'
-                                                '3) The customers phone number\n'
-                                                '4) The courier to deliver the order\n'
-                                                '5) The status of the order\n'
-                                                '6) Nothing return to main menu\n')
-                    try:
-                        field_detail = int(field_detail)
-                    except ValueError as ve:
-                        print('You need to enter a valid number')
-                        continue
-                    
-                    if (field_detail >= 1 and field_detail <= 6):
-                        if field_detail == 1:
-                            new_field_detail = input('Enter a new full name: ')
-                            orders[index]['customer_name'] = new_field_detail
-                            print(f'The full name has been updated to {new_field_detail}')
-                        if field_detail == 2:
-                            new_field_detail = input('Enter a new address: ')
-                            orders[index]['customer_address'] = new_field_detail
-                            print(f'The address has been updated to {new_field_detail}')
-                        if field_detail == 3:
-                            new_field_detail = input('Enter a new phone number: ')
-                            orders[index]['customer_phone_number'] = new_field_detail
-                            print(f'The phone number has been updated to {new_field_detail}')
-                        if field_detail == 4:
-                            new_field_detail = input('Enter a new courier: ')
-                            orders[index]['courier'] = new_field_detail
-                            print(f'The courier has been updated to {new_field_detail}')
-                        if field_detail == 5:
-                            new_field_detail = input('Enter a new status: ')
-                            orders[index]['status'] = new_field_detail
-                            print(f'The order status has been updated to {new_field_detail}')
-                        if field_detail == 6:
-                            change_order_details = False
-                            print(f'Returning to main menu')
-                    else:
-                        print('You need to pick a valid option')
-                        
-                return
+                print('You need to enter a number corresponding with a real order')
         except ValueError as ve:
             print('You need to enter a correct value')
-                
+            
+def order_field_choices():
+    correct_input = False
+    while correct_input == False:
+        order_field = input('\nWhat would you like to update?\n'
+                            '1) The customers full name\n'
+                            '2) The customers address\n'
+                            '3) The customers phone number\n'
+                            '4) The courier to deliver the order\n'
+                            '5) The status of the order\n'
+                            '6) Nothing return to main menu\n')
+        try:
+            order_field = int(order_field)
+            correct_input = True
+            return order_field
+        except ValueError as ve:
+            print('You need to enter a valid number')
+
+def update_order_field(order_field: int, index: int, orders: List[Dict]):
+    if (order_field >= 1 and order_field <= 6):
+        if order_field == 1:
+            new_order_field = input('Enter a new full name: ')
+            orders[index]['customer_name'] = new_order_field
+            print(f'The full name has been updated to {new_order_field}')
+        if order_field == 2:
+            new_order_field = input('Enter a new address: ')
+            orders[index]['customer_address'] = new_order_field
+            print(f'The address has been updated to {new_order_field}')
+        if order_field == 3:
+            new_order_field = input('Enter a new phone number: ')
+            orders[index]['customer_phone_number'] = new_order_field
+            print(f'The phone number has been updated to {new_order_field}')
+        if order_field == 4:
+            new_order_field = input('Enter a new courier: ')
+            orders[index]['courier'] = new_order_field
+            print(f'The courier has been updated to {new_order_field}')
+        if order_field == 5:
+            new_order_field = input('Enter a new status: ')
+            orders[index]['status'] = new_order_field
+            print(f'The order status has been updated to {new_order_field}')
+        if order_field == 6:
+            print(f'Returning to main menu')
+            return False
+    else:
+        print('You need to pick a valid option')
 
     
     
