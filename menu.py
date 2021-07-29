@@ -196,7 +196,7 @@ def order_to_change(num_orders: int):
     while correct_input == False:
         index = input('Choose the index of the item you want to change or "q" to return to main menu: ')
     
-        if(index.lower() == 'q'): return False
+        if(index == 'q'): return False
         try:
             index = int(index)
             if(index >= 0 and index <= num_orders - 1):
@@ -219,8 +219,11 @@ def order_field_choices():
                             '6) Nothing return to main menu\n')
         try:
             order_field = int(order_field)
-            correct_input = True
-            return order_field
+            if(order_field >= 1 and order_field <= 6):
+                correct_input = True
+                return order_field
+            else:
+                print('You need to enter a number from 1 - 6')
         except ValueError as ve:
             print('You need to enter a valid number')
 
