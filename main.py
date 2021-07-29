@@ -1,11 +1,11 @@
 import menu
 
 # populating lists from files
-products_file = './products.txt'
-couriers_file = './couriers.txt'
+products_file = './products.json'
+couriers_file = './couriers.json'
 orders_file = './orders.json'
-products = menu.read_from_file(products_file)
-couriers = menu.read_from_file(couriers_file)
+products = menu.read_from_file(products_file, to_json=True)
+couriers = menu.read_from_file(couriers_file, to_json=True)
 orders = menu.read_from_file(orders_file, to_json=True)
 
 # print(f'Products is a {type(products)}. Here is a list of your products: {products}')
@@ -21,8 +21,8 @@ while run_menu:
     
     # exits the application and saves to .txt files    
     if (main_menu_choice == 0):
-        menu.write_to_file(products_file, products)
-        menu.write_to_file(couriers_file, couriers)
+        menu.write_to_file(products_file, products, to_json=True)
+        menu.write_to_file(couriers_file, couriers, to_json=True)
         menu.write_to_file(orders_file, orders, to_json=True)
         print('\nExiting and saving application! See you next time.')
         run_menu = False
@@ -38,7 +38,7 @@ while run_menu:
         
         # add a new product to products
         elif (sub_menu_choice == 1):
-            menu.add_item('product', products)
+            menu.add_product(products)
             
         # retrieve the current product list
         elif (sub_menu_choice == 2):
@@ -65,7 +65,7 @@ while run_menu:
         
         # adding a new courier to the courier list    
         elif (sub_menu_choice == 1):
-            menu.add_item('courier', couriers)
+            menu.add_courier(couriers)
             
         # retreiving the current courier list
         elif (sub_menu_choice == 2):

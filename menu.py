@@ -105,12 +105,39 @@ def read_from_file(file, to_json = False):
                 print(f'Your file was not found')
                 return []
                 input_is_correct = False
-        
+
+def create_product_id():
+    return shortuuid.uuid()[:7]
+
+def create_courier_id():
+    return shortuuid.uuid()[:6]
+
 # add item to items, name is either product or courier (str) and items is a list
-def add_item(name, items):
-    item = str(input(f'\nPlease enter a new {name} name: '))
-    items.append(item)
-    print(f'Updated {name}s: {items}')
+def add_product(products):
+    name = str(input(f'\nPlease enter a new product name: '))
+    price = float(input(f'\nPlease enter the price of the new product: '))
+    
+    product = {
+        'id': create_product_id(),
+        'name': name,
+        'price': price
+    }
+    
+    products.append(product)
+    print(f'Updated products: {products}')
+
+def add_courier(couriers):
+    name = str(input(f'\nPlease enter a name: '))
+    phone_number = input(f'\nPlease enter a phone number: ')
+    
+    courier = {
+        'id': create_courier_id(),
+        'courier_name': name,
+        'phone_number': phone_number
+    }
+    
+    couriers.append(courier)
+    print(f'Updated courierss: {couriers}')
 
 def show_items(name: str, items: List):
     print(f'Here\'s a list of the {name}s\n')
@@ -152,26 +179,48 @@ def remove_item(name, items):
 
 def create_order_id():
     return shortuuid.uuid()
+
+def choose_courier(couriers: List[Dict]):
+    if len(couriers) < 1: return 'You need to employ or add some couriers!'
+    show_items('courier', couriers)
     
-def add_order(couriers: List[str], items: List[Dict], create_order_id):
+    correct_index = False
+    
+    while correct_index == False:
+        index = input('Please choose a courier to deliver this order')
+        
+        try:
+            index = int(index)
+            if index >=0 and index <= len(couriers) - 1:
+                correct_index = True
+                print(f'your index is {index}') #and the couriers[{index}] is: {couriers[index]} and the id value is: {couriers[index]["id"]}')
+                print(f'couriers item: {couriers[index]}')
+                print(f'couriers id: {couriers[index].get("id")}')
+                return couriers[index]['id']
+            else:
+                print('Please enter a valid index from the options above')
+        except Exception as e:
+            print(f'Please enter a valid value the error is {e}')
+    
+def add_order(couriers: List[Dict], orders: List[Dict], create_order_id):
     print(f'Please enter the details of your order')
     order_id = create_order_id()
     customer_name = input('What is your full name? ')
     customer_address = input('What is your address? ')
     customer_phone_number = input('What is your phone number? ')
-    courier = random.choice(couriers) if len(couriers) > 0 else 'A courier will be assigned later'
-    status = 'preparing'
+    courier_id = choose_courier(couriers)
+    status = 'PREPARING'
     
     order = {
         'order_id': order_id,
         'customer_name': customer_name,
         'customer_address': customer_address,
         'customer_phone_number': customer_phone_number,
-        'courier': courier,
+        'courier': courier_id,
         'status': status
     }
     
-    items.append(order)
+    orders.append(order)
 
 def update_order(id: str, orders: List[Dict]):
     num_of_orders = len(orders)
