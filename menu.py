@@ -113,23 +113,6 @@ def show_items(name: str, items: List):
     print(f'Here\'s a list of the {name}s\n')
     for index, item in enumerate(items):
         print(f'[{index}] - {item}')
-    
-# # update an existing item with a new name from the list by choosing an index    
-# def update_item(name, items):
-#     print(f'\nHere is a list of {name}s: {items}.\n')
-    
-#     index = -1
-#     while index < 0 or index > len(items) - 1: 
-#         try:
-#             index = int(input('Choose the index of the item you want to change (first item starts at 0): '))
-#         except ValueError:
-#             print('You need to enter a valid number')
-#         except Exception as e:
-#             print(f'You have an error: {str(e)}')
-            
-#     new_name = str(input(f'Please choose a new {name} name: '))
-#     items[index] = new_name
-#     print(f'Updated {name}s: {items}')
 
 # remove an existing item from items list
 def remove_item(name, items):
@@ -194,7 +177,7 @@ def add_order(couriers: List[Dict], orders: List[Dict], create_order_id):
     
     orders.append(order)
 
-def update_item(name, items: List[Dict]):
+def update_item(name, items: List[Dict], couriers: List[Dict] = None):
     # loop to choose an order to change
     change_order = True
     while change_order:
@@ -203,16 +186,17 @@ def update_item(name, items: List[Dict]):
         show_items(name, items)
         item_index = item_to_change(num_of_items)
         
-        print(f'item index = {item_index}')
         if(item_index == 'q'): 
             change_order = False
             break
         
-        selected_field = select_field_to_change(items[item_index])
+        selected_item = items[item_index]
+        
+        selected_field = select_field_to_change(selected_item)
         
         if (selected_field) == False: break
         
-        update_item_field(selected_field, item_index, items)
+        update_item_field(name, selected_field, selected_item, couriers)
 
 def item_to_change(num_orders: int):
     correct_input = False
@@ -237,6 +221,7 @@ def select_field_to_change(item):
         field_options_message = ''
         num_options = len(item) - 1
         field_options = []
+        
         for count, key in enumerate(item):
             
             field_options.append((count, key))
@@ -260,12 +245,11 @@ def select_field_to_change(item):
         except ValueError as ve:
             print('You need to enter a valid number')
 
-def update_item_field(item_key: str, item_index: int, items: List[Dict]):
-    item = items[item_index]
+def update_item_field(name: str, item_key: str, item: Dict, couriers: List[Dict]=None):
+    if (name == 'order' and item_key == 'courier'):
+        courier_id = choose_courier(couriers)
+        item[item_key] = courier_id
+        return
     new_value = input(f'Please enter the new {item_key}: ')
     item[item_key] = new_value
 
-
-    
-    
-    
