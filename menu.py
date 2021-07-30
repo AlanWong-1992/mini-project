@@ -1,5 +1,5 @@
 import json
-import random
+import csv
 import shortuuid
 from typing import List, Dict
 
@@ -54,57 +54,77 @@ def sub_menu_choice(products_or_couriers):
     return choice
 
 # writing list items to files 
-def write_to_file(file, items, to_json = False):
-    # if to_json if false then we want to save each item in items in a txt file
-    # else if to_json is true we want to save in a json file as each item in items will be a Dict
-    if (to_json == False):
-        try:
-            with open(file, 'w') as fh:
-                for item in items:
-                    fh.write(f'{item}\n')
-        except Exception as e:
-                print(f'There is an error {str(e)}')
-    elif (to_json == True):
-        try:
-            with open(file, 'w') as fh:
-                json.dump(items, fh, indent=4)
-        except Exception as e:
+def write_to_file(filepath, items, to_json = False):
+    try:
+        with open(filepath, 'w') as file:
+            keys = items[0].keys()
+            writer = csv.DictWriter(file, keys)
+            writer.writeheader()
+            writer.writerows(items)
+    except Exception as e:
             print(f'There is an error {str(e)}')
-    else:
-        print('You need to enter a correct json value')    
+            
+    # if (to_json == False):
+    #     try:
+    #         with open(file, 'w') as fh:
+    #             for item in items:
+    #                 fh.write(f'{item}\n')
+    #     except Exception as e:
+    #             print(f'There is an error {str(e)}')
+    # elif (to_json == True):
+    #     try:
+    #         with open(file, 'w') as fh:
+    #             # json.dump(items, fh, indent=4)
+    #             keys = items[0].keys()
+    #             dict_writer = csv.DictWriter(fh, keys)
+    #             dict_writer.writeheader()
+    #             dict_writer.writerows(items)
+                
+    #     except Exception as e:
+    #         print(f'There is an error {str(e)}')
+    # else:
+    #     print('You need to enter a correct json value')    
 
 # reading files and populate list items            
-def read_from_file(file, to_json = False):
-    # if to_json if false then we will read from a txt file
-    # else if to_json is true we will read from a json file
-    if (to_json == False):
-        try:
-            with open(file, 'r') as fh:
-                all_lines = fh.readlines()
-                items = []
-                for line in all_lines:
-                    if(line != '\n'): 
-                        items.append(line.rstrip())
-                return items        
-        except FileNotFoundError as fnfe:
-                print(f'Your file was not found')
-                return []
-                input_is_correct = False
-    elif (to_json == True):
-        print('populating items using JSON')
-        try:
-            with open(file, 'r') as fh:
-                parsed = json.load(fh)
-                if(parsed is not None):
-                    return parsed
-                elif(parsed is None): 
-                    return []
-                else:
-                   print('There is a problem with the application please try restarting') 
-        except FileNotFoundError as fnfe:
-                print(f'Your file was not found')
-                return []
-                input_is_correct = False
+def read_from_file(filepath):
+    try:
+        file_items = []
+        with open(filepath, 'r') as file:
+            reader = csv.DictReader(file)
+            for line in reader:
+                file_items.append(line)
+        return file_items
+    except FileNotFoundError as fnfe:
+        print(f'Your file was not found')
+        return []
+    # if (to_json == False):
+    #     try:
+    #         with open(file, 'r') as fh:
+    #             all_lines = fh.readlines()
+    #             items = []
+    #             for line in all_lines:
+    #                 if(line != '\n'): 
+    #                     items.append(line.rstrip())
+    #             return items        
+    #     except FileNotFoundError as fnfe:
+    #             print(f'Your file was not found')
+    #             return []
+    #             input_is_correct = False
+    # elif (to_json == True):
+    #     print('populating items using JSON')
+    #     try:
+    #         with open(file, 'r') as fh:
+    #             parsed = json.load(fh)
+    #             if(parsed is not None):
+    #                 return parsed
+    #             elif(parsed is None): 
+    #                 return []
+    #             else:
+    #                print('There is a problem with the application please try restarting') 
+    #     except FileNotFoundError as fnfe:
+    #             print(f'Your file was not found')
+    #             return []
+    #             input_is_correct = False
 
 def create_product_id():
     return shortuuid.uuid()[:7]

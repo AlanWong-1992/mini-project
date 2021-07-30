@@ -1,16 +1,16 @@
 import menu
 
 # populating lists from files
-products_file = './products.json'
-couriers_file = './couriers.json'
-orders_file = './orders.json'
-products = menu.read_from_file(products_file, to_json=True)
-couriers = menu.read_from_file(couriers_file, to_json=True)
-orders = menu.read_from_file(orders_file, to_json=True)
+products_file = './products.csv'
+couriers_file = './couriers.csv'
+orders_file = './orders.csv'
+products = menu.read_from_file(products_file)
+couriers = menu.read_from_file(couriers_file)
+orders = menu.read_from_file(orders_file)
 
-# print(f'Products is a {type(products)}. Here is a list of your products: {products}')
-# print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
-# print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
+print(f'Products is a {type(products)}. Here is a list of your products: {products}')
+print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
+print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
 
 run_menu = True
 
@@ -21,9 +21,9 @@ while run_menu:
     
     # exits the application and saves to .txt files    
     if (main_menu_choice == 0):
-        menu.write_to_file(products_file, products, to_json=True)
-        menu.write_to_file(couriers_file, couriers, to_json=True)
-        menu.write_to_file(orders_file, orders, to_json=True)
+        menu.write_to_file(products_file, products)
+        menu.write_to_file(couriers_file, couriers)
+        menu.write_to_file(orders_file, orders)
         print('\nExiting and saving application! See you next time.')
         run_menu = False
     
