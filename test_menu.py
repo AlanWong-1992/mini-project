@@ -6,7 +6,7 @@ def show_items(name: str, items: List):
     for index, item in enumerate(items):
         print(f'[{index}] - {item}')
         
-def update_order(orders: List[Dict], show_items, order_to_change, order_field_choices, update_order_field):
+def update_item(orders: List[Dict], show_items, item_to_change, select_field_to_change, update_order_field):
     num_of_orders = len(orders)
     # show user the list of orders they can update
     show_items('order', orders)
@@ -14,11 +14,11 @@ def update_order(orders: List[Dict], show_items, order_to_change, order_field_ch
     # loop to choose an order to change
     change_order = True
     while change_order:
-        order_number = order_to_change(num_of_orders)
+        order_number = item_to_change(num_of_orders)
         
         if(order_number == 'q'): break
         
-        selected_field = order_field_choices()
+        selected_field = select_field_to_change()
         
         change_order_details = update_order_field(selected_field, order_number, orders)
         
@@ -31,21 +31,21 @@ def test_update_order():
     
     mock_show_items = Mock()
     mock_order_to_change = Mock()
-    mock_order_field_choices = Mock()
+    mock_select_field_to_change = Mock()
     mock_update_order_field = Mock()
     
     mock_show_items.return_value = False
     mock_order_to_change.return_value = 0
-    mock_order_field_choices.return_value = 1
+    mock_select_field_to_change.return_value = 1
     mock_update_order_field.return_value = False
     
-    actual = update_order(orders, mock_show_items, mock_order_to_change, mock_order_field_choices, mock_update_order_field)
+    actual = update_item(orders, mock_show_items, mock_order_to_change, mock_select_field_to_change, mock_update_order_field)
     assert mock_show_items.assert_called_once
     assert mock_order_to_change.assert_called_once
-    assert mock_order_field_choices.assert_called_once
+    assert mock_select_field_to_change.assert_called_once
     assert mock_update_order_field.assert_called_once
     
-def order_to_change(num_orders: int):
+def item_to_change(num_orders: int):
     correct_input = False
     while correct_input == False:
         index = input('Choose the index of the item you want to change or "q" to return to main menu: ')
@@ -64,14 +64,14 @@ def order_to_change(num_orders: int):
 @patch('builtins.input', side_effects=1)
 def test_order_to_change(mock_input):
     a = 5
-    order_to_change(a)
+    item_to_change(a)
     assert mock_input.call_count == 1
 
 @patch('builtins.input', lambda *args: 3)
 def test_order_to_change():
     a = 5
     expected = 3
-    actual = order_to_change(a)
+    actual = item_to_change(a)
     
     assert actual == expected
 
@@ -79,7 +79,7 @@ def test_order_to_change():
 def test_order_to_change():
     a = 5
     expected = False
-    actual = order_to_change(a)
+    actual = item_to_change(a)
     
     assert actual == expected
 
@@ -99,14 +99,14 @@ def test_get_user_details(mock_print, mock_input):
 @patch('builtins.input', side_effect=[10, 20, 30, 4])
 def test_order_to_change(mock_input):
     a = 5
-    order_to_change(a)
+    item_to_change(a)
     assert mock_input.call_count == 4
 
 @patch('builtins.input', side_effect = [20, 1])
 @patch('builtins.print')
 def test_order_to_change(mock_print, mock_input):
     a = 5
-    order_to_change(a)
+    item_to_change(a)
     mock_print.assert_called_with('You need to enter a number corresponding with a real order')
     assert mock_input.call_count == 2
 
@@ -114,11 +114,11 @@ def test_order_to_change(mock_print, mock_input):
 @patch('builtins.print')
 def test_order_to_change(mock_print, mock_input):
     a = 5
-    order_to_change(a)
+    item_to_change(a)
     mock_print.assert_called_with('You need to enter a number corresponding with a real order')
     assert mock_input.call_count == 2    
     
-def order_field_choices():
+def select_field_to_change():
     correct_input = False
     while correct_input == False:
         order_field = input('\nWhat would you like to update?\n'
@@ -139,19 +139,19 @@ def order_field_choices():
             print('You need to enter a valid number')
 
 @patch('builtins.input', side_effect=[1])
-def test_order_field_choices(mock_input):
+def test_select_field_to_change(mock_input):
     expected = 1
-    actual = order_field_choices()
+    actual = select_field_to_change()
     
     assert actual == expected
     assert mock_input.call_count == 1
 
 @patch('builtins.input', side_effect = [20, 1])
 @patch('builtins.print')
-def test_order_field_choices(mock_print, mock_input):
+def test_select_field_to_change(mock_print, mock_input):
 
     expected = 1
-    actual = order_field_choices()
+    actual = select_field_to_change()
     mock_print.assert_called_with('You need to enter a number from 1 - 6')
     assert expected == actual
     assert mock_input.call_count == 2    

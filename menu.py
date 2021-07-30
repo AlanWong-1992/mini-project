@@ -1,4 +1,3 @@
-import json
 import csv
 import shortuuid
 from typing import List, Dict
@@ -15,7 +14,7 @@ def main_menu_choice():
                                 '2) See Courier Options\n'
                                 '3) See Order Options\n'
                                 'Please enter a number from the options above: '))
-            if (type(choice) == int and choice <=3 and choice >=0):
+            if (type(choice) == int and choice <= 3 and choice >= 0):
                 input_is_correct = True
             else:
                 print('You need to pick one of the numbers above')
@@ -63,27 +62,6 @@ def write_to_file(filepath, items, to_json = False):
             writer.writerows(items)
     except Exception as e:
             print(f'There is an error {str(e)}')
-            
-    # if (to_json == False):
-    #     try:
-    #         with open(file, 'w') as fh:
-    #             for item in items:
-    #                 fh.write(f'{item}\n')
-    #     except Exception as e:
-    #             print(f'There is an error {str(e)}')
-    # elif (to_json == True):
-    #     try:
-    #         with open(file, 'w') as fh:
-    #             # json.dump(items, fh, indent=4)
-    #             keys = items[0].keys()
-    #             dict_writer = csv.DictWriter(fh, keys)
-    #             dict_writer.writeheader()
-    #             dict_writer.writerows(items)
-                
-    #     except Exception as e:
-    #         print(f'There is an error {str(e)}')
-    # else:
-    #     print('You need to enter a correct json value')    
 
 # reading files and populate list items            
 def read_from_file(filepath):
@@ -97,34 +75,6 @@ def read_from_file(filepath):
     except FileNotFoundError as fnfe:
         print(f'Your file was not found')
         return []
-    # if (to_json == False):
-    #     try:
-    #         with open(file, 'r') as fh:
-    #             all_lines = fh.readlines()
-    #             items = []
-    #             for line in all_lines:
-    #                 if(line != '\n'): 
-    #                     items.append(line.rstrip())
-    #             return items        
-    #     except FileNotFoundError as fnfe:
-    #             print(f'Your file was not found')
-    #             return []
-    #             input_is_correct = False
-    # elif (to_json == True):
-    #     print('populating items using JSON')
-    #     try:
-    #         with open(file, 'r') as fh:
-    #             parsed = json.load(fh)
-    #             if(parsed is not None):
-    #                 return parsed
-    #             elif(parsed is None): 
-    #                 return []
-    #             else:
-    #                print('There is a problem with the application please try restarting') 
-    #     except FileNotFoundError as fnfe:
-    #             print(f'Your file was not found')
-    #             return []
-    #             input_is_correct = False
 
 def create_product_id():
     return shortuuid.uuid()[:7]
@@ -164,26 +114,26 @@ def show_items(name: str, items: List):
     for index, item in enumerate(items):
         print(f'[{index}] - {item}')
     
-# update an existing item with a new name from the list by choosing an index    
-def update_item(name, items):
-    print(f'\nHere is a list of {name}s: {items}.\n')
+# # update an existing item with a new name from the list by choosing an index    
+# def update_item(name, items):
+#     print(f'\nHere is a list of {name}s: {items}.\n')
     
-    index = -1
-    while index < 0 or index > len(items) - 1: 
-        try:
-            index = int(input('Choose the index of the item you want to change (first item starts at 0): '))
-        except ValueError:
-            print('You need to enter a valid number')
-        except Exception as e:
-            print(f'You have an error: {str(e)}')
+#     index = -1
+#     while index < 0 or index > len(items) - 1: 
+#         try:
+#             index = int(input('Choose the index of the item you want to change (first item starts at 0): '))
+#         except ValueError:
+#             print('You need to enter a valid number')
+#         except Exception as e:
+#             print(f'You have an error: {str(e)}')
             
-    new_name = str(input(f'Please choose a new {name} name: '))
-    items[index] = new_name
-    print(f'Updated {name}s: {items}')
+#     new_name = str(input(f'Please choose a new {name} name: '))
+#     items[index] = new_name
+#     print(f'Updated {name}s: {items}')
 
 # remove an existing item from items list
 def remove_item(name, items):
-    print(f'\nHere is a list of {name}s: {items}.\n')
+    show_items(name, items)
     
     index = -1
     while index < 0 or index > len(items) - 1:
@@ -195,7 +145,9 @@ def remove_item(name, items):
             print(f'You have an error: {str(e)}')
             
     items.pop(index)
-    print(f'Updated {name}s: {items}')
+    
+    print(f'Here is the updated list of {name}s:')
+    show_items(name, items)
 
 def create_order_id():
     return shortuuid.uuid()
@@ -242,87 +194,77 @@ def add_order(couriers: List[Dict], orders: List[Dict], create_order_id):
     
     orders.append(order)
 
-def update_order(id: str, orders: List[Dict]):
-    num_of_orders = len(orders)
-    # show user the list of orders they can update
-    show_items('order', orders)
-
+def update_item(name, items: List[Dict]):
     # loop to choose an order to change
     change_order = True
     while change_order:
-        order_number = order_to_change(num_of_orders)
+        num_of_items = len(items)
+        # show user the list of items they can update
+        show_items(name, items)
+        item_index = item_to_change(num_of_items)
         
-        if(order_number == False): break
+        print(f'item index = {item_index}')
+        if(item_index == 'q'): 
+            change_order = False
+            break
         
-        selected_field = order_field_choices()
+        selected_field = select_field_to_change(items[item_index])
         
-        change_order_details = update_order_field(selected_field, order_number, orders)
+        if (selected_field) == False: break
         
-        if (change_order_details) == False: break
+        update_item_field(selected_field, item_index, items)
 
-def order_to_change(num_orders: int):
+def item_to_change(num_orders: int):
     correct_input = False
     while correct_input == False:
         index = input('Choose the index of the item you want to change or "q" to return to main menu: ')
     
-        if(index == 'q'): return False
+        if(index == 'q'): return 'q'
+        
         try:
             index = int(index)
             if(index >= 0 and index <= num_orders - 1):
                 correct_input = True
                 return index
             else:
-                print('You need to enter a number corresponding with a real order')
+                print('You need to enter a valid number')
         except ValueError as ve:
             print('You need to enter a correct value')
             
-def order_field_choices():
+def select_field_to_change(item):
     correct_input = False
     while correct_input == False:
-        order_field = input('\nWhat would you like to update?\n'
-                            '1) The customers full name\n'
-                            '2) The customers address\n'
-                            '3) The customers phone number\n'
-                            '4) The courier to deliver the order\n'
-                            '5) The status of the order\n'
-                            '6) Nothing return to main menu\n')
+        field_options_message = ''
+        num_options = len(item) - 1
+        field_options = []
+        for count, key in enumerate(item):
+            
+            field_options.append((count, key))
+            
+            # skipping 0 as this is the id for the products, couriers, and orders 
+            # which the user shouldn't change but we want for our field options 
+            # list to easier select the key later in the function
+            if count == 0: continue 
+            
+            field_options_message += f'{count} - {key}\n'
+            
+        index = input(f'What would you like to update?\n{field_options_message}')
+
         try:
-            order_field = int(order_field)
-            if(order_field >= 1 and order_field <= 6):
+            index = int(index)
+            if(index >= 1 and index <= num_options):
                 correct_input = True
-                return order_field
+                return field_options[index][1]
             else:
-                print('You need to enter a number from 1 - 6')
+                print(f'You need to enter a number from 1 - {num_options}')
         except ValueError as ve:
             print('You need to enter a valid number')
 
-def update_order_field(order_field: int, index: int, orders: List[Dict]):
-    if (order_field >= 1 and order_field <= 6):
-        if order_field == 1:
-            new_order_field = input('Enter a new full name: ')
-            orders[index]['customer_name'] = new_order_field
-            print(f'The full name has been updated to {new_order_field}')
-        if order_field == 2:
-            new_order_field = input('Enter a new address: ')
-            orders[index]['customer_address'] = new_order_field
-            print(f'The address has been updated to {new_order_field}')
-        if order_field == 3:
-            new_order_field = input('Enter a new phone number: ')
-            orders[index]['customer_phone_number'] = new_order_field
-            print(f'The phone number has been updated to {new_order_field}')
-        if order_field == 4:
-            new_order_field = input('Enter a new courier: ')
-            orders[index]['courier'] = new_order_field
-            print(f'The courier has been updated to {new_order_field}')
-        if order_field == 5:
-            new_order_field = input('Enter a new status: ')
-            orders[index]['status'] = new_order_field
-            print(f'The order status has been updated to {new_order_field}')
-        if order_field == 6:
-            print(f'Returning to main menu')
-            return False
-    else:
-        print('You need to pick a valid option')
+def update_item_field(item_key: str, item_index: int, items: List[Dict]):
+    item = items[item_index]
+    new_value = input(f'Please enter the new {item_key}: ')
+    item[item_key] = new_value
+
 
     
     
