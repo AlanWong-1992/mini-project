@@ -215,7 +215,25 @@ def choose_products(products: List[Dict]):
                 
         except Exception as e:
             print(f'Please enter a valid value the error is {e}')
+
+def choose_status():
+    possible_status = ['Preparing', 'Out for delivery', 'Delivered']
+    for index, value in enumerate(possible_status):
+        print(f'[{index + 1}] - {value}')
     
+    correct_input = False
+    while correct_input == False:
+        selected_status = input('Please pick a status for your order\n')
+        try:
+            selected_status = int(selected_status)
+            if selected_status >= 1 and selected_status <= len(possible_status):
+                return possible_status[selected_status - 1]
+            else:
+                print('You need to enter a valid option')
+        except Exception as e:
+            print(f'Please enter a valid value')
+    
+        
 def add_order(products: List[Dict], couriers: List[Dict], orders: List[Dict], create_order_id):
     print(f'Please enter the details of your order')
     order_id = create_order_id()
@@ -224,7 +242,7 @@ def add_order(products: List[Dict], couriers: List[Dict], orders: List[Dict], cr
     customer_phone_number = input('What is your phone number? ')
     courier_id = choose_courier(couriers)
     order_basket = choose_products(products)
-    status = 'PREPARING'
+    status = choose_status()
     
     order = {
         'order_id': order_id,
@@ -313,8 +331,12 @@ def update_item_field(name: str, item_key: str, item: Dict, products: List[Dict]
         item[item_key] = courier_id
         return
     elif (name == 'order' and item_key == 'products'):
-        new_products = choose_products(products)
-        item[item_key] = new_products
+        order_basket = choose_products(products)
+        item[item_key] = order_basket
+        return
+    elif (name == 'order' and item_key == 'status'):
+        status = choose_status()
+        item[item_key] = status
         return
     
     new_value = input(f'Please enter the new {item_key}: ')
