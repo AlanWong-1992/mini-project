@@ -109,7 +109,7 @@ while run_menu:
         # updating a order chosen from the order list
         elif (sub_menu_choice == 3):
             print(couriers)
-            menu.update_item('order', orders, couriers=couriers)
+            menu.update_item('order', orders, products=products, couriers=couriers)
             
         # deleting a order from the order list
         elif (sub_menu_choice == 4):
