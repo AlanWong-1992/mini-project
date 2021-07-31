@@ -1,7 +1,7 @@
 import csv
 import shortuuid
 from typing import List, Dict
-
+from itertools import repeat
 # main menu, user chooses an option 
 def main_menu_choice():
     input_is_correct = False
@@ -52,6 +52,27 @@ def sub_menu_choice(products_or_couriers):
 
     return choice
 
+def view_orders_choice():
+    input_is_correct = False;
+    while input_is_correct == False:
+        try:
+            choice = int(input('\nPlease choose an option by selecting a number:\n'
+                                '1 - View all orders\n'
+                                '2 - View orders by status\n'
+                                '3 - View orders by courier\n'
+                                ))
+            if (type(choice) == int and choice <=3 and choice >=1):
+                input_is_correct = True
+            else:
+                print('You need to pick one of the numbers above')
+        except ValueError:
+            print('You need to enter a correct value')
+            input_is_correct = False
+        except Exception as e:
+            print(f'There is an error {str(e)}')
+            input_is_correct = False
+
+    return choice
 # writing list items to files 
 def write_to_file(filepath, items, to_json = False):
     try:
@@ -109,10 +130,21 @@ def add_courier(couriers):
     couriers.append(courier)
     print(f'Updated courierss: {couriers}')
 
-def show_items(name: str, items: List):
-    print(f'Here\'s a list of the {name}s\n')
-    for index, item in enumerate(items):
-        print(f'[{index}] - {item}')
+def show_items(name: str, items: List[Dict], couriers: List[Dict] = None, status=False, courier=False):
+    if (status):
+        for index, item in enumerate(items):
+            # print(f'[{index}] - {item}')
+            print('This is going to show by status')
+    elif(courier):
+        courier_index = choose_courier(couriers)
+        print('This is going to show by courier')
+        for index, item in enumerate(items):
+            if(courier_index) == item['courier']:
+                print(f'[{index}] - {item}')
+    else:
+        print(f'Here\'s a list of the {name}s\n')
+        for index, item in enumerate(items):
+            print(f'[{index}] - {item}')
 
 # remove an existing item from items list
 def remove_item(name, items):
@@ -142,7 +174,7 @@ def choose_courier(couriers: List[Dict]):
     correct_index = False
     
     while correct_index == False:
-        index = input('Please choose a courier to deliver this order')
+        index = input('Please choose a courier')
         
         try:
             index = int(index)
@@ -156,14 +188,42 @@ def choose_courier(couriers: List[Dict]):
                 print('Please enter a valid index from the options above')
         except Exception as e:
             print(f'Please enter a valid value the error is {e}')
+
+def choose_products(products: List[Dict]):
+    num_of_products = len(products)
+    order_basket = []
+
+    finished_selecting = False
+    while finished_selecting == False:
+        show_items('product', products)
+        product_index = input('Please choose from the list above or type in "f" to finish order selection: ')
+        
+        if product_index == 'f' and len(order_basket) > 0: 
+            finished_selecting = True
+            return order_basket
+        elif product_index == 'f' and len(order_basket) == 0:
+            print('You need to have at least 1 item in your order')
+            continue 
+        
+        try:
+            product_index = int(product_index)
+            quantity = int(input('How many would you like? '))
+            if product_index >= 0 and product_index <= num_of_products - 1:
+                order_basket.extend(repeat(products[product_index]['id'], quantity))
+            else:
+                print('You need to enter a correct product option and entries must be numbers')
+                
+        except Exception as e:
+            print(f'Please enter a valid value the error is {e}')
     
-def add_order(couriers: List[Dict], orders: List[Dict], create_order_id):
+def add_order(products: List[Dict], couriers: List[Dict], orders: List[Dict], create_order_id):
     print(f'Please enter the details of your order')
     order_id = create_order_id()
     customer_name = input('What is your full name? ')
     customer_address = input('What is your address? ')
     customer_phone_number = input('What is your phone number? ')
     courier_id = choose_courier(couriers)
+    order_basket = choose_products(products)
     status = 'PREPARING'
     
     order = {
@@ -172,12 +232,13 @@ def add_order(couriers: List[Dict], orders: List[Dict], create_order_id):
         'customer_address': customer_address,
         'customer_phone_number': customer_phone_number,
         'courier': courier_id,
+        'products': order_basket,
         'status': status
     }
     
     orders.append(order)
 
-def update_item(name, items: List[Dict], couriers: List[Dict] = None):
+def update_item(name, items: List[Dict], products: List[Dict] = None, couriers: List[Dict] = None):
     # loop to choose an order to change
     change_order = True
     while change_order:
@@ -196,7 +257,7 @@ def update_item(name, items: List[Dict], couriers: List[Dict] = None):
         
         if (selected_field) == False: break
         
-        update_item_field(name, selected_field, selected_item, couriers)
+        update_item_field(name, selected_field, selected_item, products, couriers)
 
 def item_to_change(num_orders: int):
     correct_input = False
@@ -245,11 +306,17 @@ def select_field_to_change(item):
         except ValueError as ve:
             print('You need to enter a valid number')
 
-def update_item_field(name: str, item_key: str, item: Dict, couriers: List[Dict]=None):
+def update_item_field(name: str, item_key: str, item: Dict, products: List[Dict] = None, couriers: List[Dict]=None):
+    #if-else block just for updating orders
     if (name == 'order' and item_key == 'courier'):
         courier_id = choose_courier(couriers)
         item[item_key] = courier_id
         return
+    elif (name == 'order' and item_key == 'products'):
+        new_products = choose_products(products)
+        item[item_key] = new_products
+        return
+    
     new_value = input(f'Please enter the new {item_key}: ')
     item[item_key] = new_value
 
