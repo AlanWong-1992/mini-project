@@ -102,9 +102,9 @@ while run_menu:
             if(view_order_choice == 1):
                 menu.show_items('order', orders)
             elif(view_order_choice == 2):
-                menu.show_items('order', orders, status=True)
+                menu.show_orders_by_status(orders)
             elif(view_order_choice == 3):
-                menu.show_items('order', orders, courier=True, couriers=couriers)
+                menu.show_orders_by_courier(orders, couriers=couriers)
             
         # updating a order chosen from the order list
         elif (sub_menu_choice == 3):

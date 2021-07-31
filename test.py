@@ -121,5 +121,25 @@ def choose_products(products: List[Dict]):
         except Exception as e:
             print(f'Please enter a valid value the error is {e}')
             
-selected_products = choose_products(products)
-print(selected_products)
+# selected_products = choose_products(products)
+# print(selected_products)
+
+def choose_status():
+    possible_status = ['Preparing', 'Out for delivery', 'Delivered']
+    for index, value in enumerate(possible_status):
+        print(f'[{index + 1}] - {value}')
+    
+    correct_input = False
+    while correct_input == False:
+        selected_status = input('Please pick a status for your order\n')
+        try:
+            selected_status = int(selected_status)
+            if selected_status >= 1 and selected_status <= len(possible_status):
+                return possible_status[selected_status - 1]
+            else:
+                print('You need to enter a valid option')
+        except Exception as e:
+            print(f'Please enter a valid value')
+            
+status = choose_status()
+print(status)

@@ -130,22 +130,38 @@ def add_courier(couriers):
     couriers.append(courier)
     print(f'Updated courierss: {couriers}')
 
-def show_items(name: str, items: List[Dict], couriers: List[Dict] = None, status=False, courier=False):
-    if (status):
-        for index, item in enumerate(items):
-            # print(f'[{index}] - {item}')
-            print('This is going to show by status')
-    elif(courier):
-        courier_index = choose_courier(couriers)
-        print('This is going to show by courier')
-        for index, item in enumerate(items):
-            if(courier_index) == item['courier']:
-                print(f'[{index}] - {item}')
-    else:
-        print(f'Here\'s a list of the {name}s\n')
-        for index, item in enumerate(items):
-            print(f'[{index}] - {item}')
+def show_items(name: str, items: List[Dict]):
+    print(f'Here\'s a list of the {name}s\n')
+    for index, item in enumerate(items):
+        print(f'[{index}] - {item}')
 
+def show_orders_by_status(orders: List[Dict]):
+    orders_by_status = []
+    status = choose_status()
+    
+    for index, order in enumerate(orders):
+        if(status) == order['status']:
+            orders_by_status.append(order)
+    
+    print('These are your orders by status')
+    
+    for index, order in enumerate(orders_by_status):
+        if(status) == order['status']:
+            print(f'[{index}] - {order}')
+
+def show_orders_by_courier(orders: List[Dict], couriers: List[Dict]):
+    orders_by_courier = []
+    courier_index = choose_courier(couriers)
+    
+    for order in orders:
+        if(courier_index) == order['courier']:
+            orders_by_courier.append(order)
+    
+    print('These are your orders by courier')
+    
+    for index, order in enumerate(orders_by_courier):
+        print(f'[{index}] - {order}')
+                     
 # remove an existing item from items list
 def remove_item(name, items):
     show_items(name, items)
