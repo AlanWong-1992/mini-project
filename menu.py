@@ -2,6 +2,8 @@ import csv
 import shortuuid
 from typing import List, Dict
 from itertools import repeat
+from db_helper import DBHelper
+
 # main menu, user chooses an option 
 def main_menu_choice():
     input_is_correct = False
@@ -73,6 +75,7 @@ def view_orders_choice():
             input_is_correct = False
 
     return choice
+
 # writing list items to files 
 def write_to_file(filepath, items, to_json = False):
     try:
@@ -104,31 +107,40 @@ def create_courier_id():
     return shortuuid.uuid()[:6]
 
 # add item to items, name is either product or courier (str) and items is a list
-def add_product(products):
-    name = str(input(f'\nPlease enter a new product name: '))
+def add_product(products, db_helper: DBHelper):
+    product_name = str(input(f'\nPlease enter the name of the product: '))
     price = float(input(f'\nPlease enter the price of the new product: '))
     
-    product = {
-        'id': create_product_id(),
-        'name': name,
-        'price': price
-    }
+    # product = {
+    #     'name': product_name,
+    #     'price': price
+    # }
     
-    products.append(product)
-    print(f'Updated products: {products}')
+    sql = f'INSERT INTO product(ProductName, Price) VALUES ("{product_name}", "{price}")'
+    db_helper.execute(sql)
+    
+    # print(sql)
+    # products.append(product)
+    print(f'{product_name} with a price of {price} has been added to the menu!\n')
 
-def add_courier(couriers):
-    name = str(input(f'\nPlease enter a name: '))
-    phone_number = input(f'\nPlease enter a phone number: ')
+def add_courier(couriers, db_helper: DBHelper):
+    courier_id = create_courier_id()
+    first_name = str(input(f'\nPlease enter the first name: '))
+    last_name = str(input(f'\nPlease enter the last name: '))
+    phone_number = input(f'\nPlease enter the phone number: ')
     
-    courier = {
-        'id': create_courier_id(),
-        'courier_name': name,
-        'phone_number': phone_number
-    }
+    sql = f'INSERT INTO Courier(CourierID, FirstName, LastName, PhoneNumber) VALUES ("{courier_id}", "{first_name}", "{last_name}", "{phone_number}")'
+    db_helper.execute(sql)
     
-    couriers.append(courier)
-    print(f'Updated courierss: {couriers}')
+    # courier = {
+    #     'id': create_courier_id(),
+    #     'courier_name': name,
+    #     'phone_number': phone_number
+    # }
+    
+    # couriers.append(courier)
+    # print(f'Updated courierss: {couriers}')
+    print(f'{first_name} {last_name} with a phone number of {phone_number} has been added to the couriers\n')
 
 def show_items(name: str, items: List[Dict]):
     print(f'Here\'s a list of the {name}s\n')

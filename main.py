@@ -1,4 +1,18 @@
 import menu
+import pymysql
+import os
+from db_helper import DBHelper
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+host = os.environ.get("mysql_host")
+user = os.environ.get("mysql_user")
+password = os.environ.get("mysql_pass")
+database = os.environ.get("mysql_db")
+
+# instantiate DB object
+db_helper = DBHelper(host, user, password, database)
 
 # populating lists from files
 products_file = './products.csv'
@@ -38,7 +52,7 @@ while run_menu:
         
         # add a new product to products
         elif (sub_menu_choice == 1):
-            menu.add_product(products)
+            menu.add_product(products, db_helper)
             
         # retrieve the current product list
         elif (sub_menu_choice == 2):
@@ -65,7 +79,7 @@ while run_menu:
         
         # adding a new courier to the courier list    
         elif (sub_menu_choice == 1):
-            menu.add_courier(couriers)
+            menu.add_courier(couriers, db_helper)
             
         # retreiving the current courier list
         elif (sub_menu_choice == 2):
