@@ -142,8 +142,11 @@ def add_courier(couriers, db_helper: DBHelper):
     # print(f'Updated courierss: {couriers}')
     print(f'{first_name} {last_name} with a phone number of {phone_number} has been added to the couriers\n')
 
-def show_items(name: str, items: List[Dict]):
-    print(f'Here\'s a list of the {name}s\n')
+def show_items(item_type: str, db_helper: DBHelper):
+    print(f'Here\'s a list of the {item_type}s\n')
+    
+    sql = f'SELECT * FROM {item_type}'
+    items = db_helper.fetch(sql)
     for index, item in enumerate(items):
         print(f'[{index}] - {item}')
 
