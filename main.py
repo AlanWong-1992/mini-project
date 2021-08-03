@@ -52,7 +52,7 @@ while run_menu:
         
         # add a new product to products
         elif (sub_menu_choice == 1):
-            menu.add_product(products, db_helper)
+            menu.add_product(db_helper)
             
         # retrieve the current product list
         elif (sub_menu_choice == 2):
@@ -64,7 +64,7 @@ while run_menu:
             
         # deleting a product from the product list
         elif (sub_menu_choice == 4):
-            menu.remove_item('product', products)
+            menu.remove_item('product', db_helper)
     
     # courier options    
     elif (main_menu_choice == 2):
@@ -79,7 +79,7 @@ while run_menu:
         
         # adding a new courier to the courier list    
         elif (sub_menu_choice == 1):
-            menu.add_courier(couriers, db_helper)
+            menu.add_courier(db_helper)
             
         # retreiving the current courier list
         elif (sub_menu_choice == 2):
@@ -91,7 +91,7 @@ while run_menu:
             
         # deleting a courier from the courier list
         elif (sub_menu_choice == 4):
-            menu.remove_item('courier', couriers)
+            menu.remove_item('courier', db_helper)
     
     # order options    
     elif (main_menu_choice == 3):
@@ -106,8 +106,8 @@ while run_menu:
         
         # adding a new order to the order list    
         elif (sub_menu_choice == 1):
-            menu.add_order(products, couriers, orders, menu.create_order_id)
-            print(f'read_from_fileHere are your orders: {orders}')
+            menu.add_order(db_helper)
+            # print(f'read_from_fileHere are your orders: {orders}')
             
         # retreiving the current order list
         elif (sub_menu_choice == 2):
@@ -127,5 +127,5 @@ while run_menu:
             
         # deleting a order from the order list
         elif (sub_menu_choice == 4):
-            menu.remove_item('order', orders)
+            menu.remove_item('order', db_helper)
 exit()
