@@ -56,7 +56,7 @@ while run_menu:
             
         # retrieve the current product list
         elif (sub_menu_choice == 2):
-            menu.show_items('product', db_helper)
+            menu.show_items('product', 'product', db_helper)
             
         # update a product chosen from the product list
         elif (sub_menu_choice == 3):
@@ -83,7 +83,7 @@ while run_menu:
             
         # retreiving the current courier list
         elif (sub_menu_choice == 2):
-            menu.show_items('courier', db_helper)
+            menu.show_items('courier', 'courier', db_helper)
             
         # updating a courier chosen from the courier list
         elif (sub_menu_choice == 3):
@@ -114,7 +114,7 @@ while run_menu:
             view_order_choice = menu.view_orders_choice()
             
             if(view_order_choice == 1):
-                menu.show_items('order', db_helper)
+                menu.show_all_orders('order_info','order_product', db_helper)
             elif(view_order_choice == 2):
                 menu.show_orders_by_status(orders)
             elif(view_order_choice == 3):
@@ -123,8 +123,9 @@ while run_menu:
         # updating a order chosen from the order list
         elif (sub_menu_choice == 3):
             print(couriers)
-            menu.update_item('order', orders, products=products, couriers=couriers)
-            
+            # menu.update_item('order', orders, products=products, couriers=couriers)
+            menu.update_order(db_helper)
+                        
         # deleting a order from the order list
         elif (sub_menu_choice == 4):
             menu.remove_item('order', db_helper)
