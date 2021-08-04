@@ -60,11 +60,11 @@ while run_menu:
             
         # update a product chosen from the product list
         elif (sub_menu_choice == 3):
-            menu.update_item('product', products)
+            menu.update_product(db_helper)
             
         # deleting a product from the product list
         elif (sub_menu_choice == 4):
-            menu.remove_item('product', db_helper)
+            menu.remove_item('product', 'product', db_helper)
     
     # courier options    
     elif (main_menu_choice == 2):
@@ -87,11 +87,11 @@ while run_menu:
             
         # updating a courier chosen from the courier list
         elif (sub_menu_choice == 3):
-            menu.update_item('courier', couriers)
+            menu.update_courier(db_helper)
             
         # deleting a courier from the courier list
         elif (sub_menu_choice == 4):
-            menu.remove_item('courier', db_helper)
+            menu.remove_item('courier', 'courier', db_helper)
     
     # order options    
     elif (main_menu_choice == 3):
@@ -114,11 +114,13 @@ while run_menu:
             view_order_choice = menu.view_orders_choice()
             
             if(view_order_choice == 1):
-                menu.show_all_orders('order_info','order_product', db_helper)
+                order_id = menu.show_all_orders('order_info','order_product', db_helper)
+                # see_order_products = input('Would you like to see the products for this order? [y/n]')
+                # if see_order_products
             elif(view_order_choice == 2):
-                menu.show_orders_by_status(orders)
+                menu.show_orders_by_status(db_helper)
             elif(view_order_choice == 3):
-                menu.show_orders_by_courier(orders, couriers=couriers)
+                menu.show_orders_by_courier(db_helper)
             
         # updating a order chosen from the order list
         elif (sub_menu_choice == 3):
@@ -128,5 +130,5 @@ while run_menu:
                         
         # deleting a order from the order list
         elif (sub_menu_choice == 4):
-            menu.remove_item('order', db_helper)
+            menu.remove_item('order', 'order_info', db_helper)
 exit()
