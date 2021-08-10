@@ -15,12 +15,12 @@ database = os.environ.get("mysql_db")
 db_helper = DBHelper(host, user, password, database)
 
 # populating lists from files
-products_file = './products.csv'
-couriers_file = './couriers.csv'
-orders_file = './orders.csv'
-products = menu.read_from_file(products_file)
-couriers = menu.read_from_file(couriers_file)
-orders = menu.read_from_file(orders_file)
+# products_file = './products.csv'
+# couriers_file = './couriers.csv'
+# orders_file = './orders.csv'
+products = []
+couriers = []
+orders = []
 
 run_menu = True
 
@@ -31,9 +31,9 @@ while run_menu:
     
     # exits the application and saves to .txt files    
     if (main_menu_choice == 0):
-        menu.write_to_file(products_file, products)
-        menu.write_to_file(couriers_file, couriers)
-        menu.write_to_file(orders_file, orders)
+        # menu.write_to_file(products_file, products)
+        # menu.write_to_file(couriers_file, couriers)
+        # menu.write_to_file(orders_file, orders)
         print('\nExiting and saving application! See you next time.')
         run_menu = False
     
