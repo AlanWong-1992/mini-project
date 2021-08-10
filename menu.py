@@ -165,14 +165,6 @@ def show_all_orders(table1: str, table2: str, db_helper: DBHelper):
         print('You have not entered a correct Order ID')
     
     show_order_products(order_id, db_helper)
-    print('Show order products should have ran')
-    # sql = f'SELECT * FROM order_product WHERE OrderID="{order_id}"'
-    # orders = db_helper.fetch(sql)
-    
-    # for index, order in enumerate(orders, 1):
-    #     print(f'[{index}] - {order}')
-
-    # return orders
 
 def show_order_products(order_id: str, db_helper: DBHelper):
     sql = f'''SELECT order_product.OrderID, product.ProductID, product.ProductName, order_product.Quantity, product.Price
@@ -180,29 +172,88 @@ def show_order_products(order_id: str, db_helper: DBHelper):
         INNER JOIN product ON order_product.ProductID=product.ProductID
         WHERE order_product.OrderID="{order_id}"
     '''
-    order = db_helper.fetch(sql)
-    print(f'order: {order}')
-    for item in order:
-        print(item)
+    items = db_helper.fetch(sql)
+    
+    for index, item in enumerate(items, 1):
+        print(f'[{index}] - {item}')
     
 def show_orders_by_status(db_helper: DBHelper):
-    sql = f'''SELECT order_info.OrderID, status.Status
+    status_sql = f'SELECT * FROM status'
+    status_list = db_helper.fetch(status_sql)
+    selected_status = None
+    
+    for index, status in enumerate(status_list, 1):
+        print(f'[{index}] - {status}')
+
+    correct_input = False
+    while correct_input == False:
+        
+        try:    
+            status_index = input('Please enter the index of the status you would like to see status for\nLeave blank to exit: ')
+            
+            if status_index.strip() == '': return
+            
+            status_index = int(status_index)
+            
+        except Exception as e:
+            print('You must enter a number')
+            continue
+        
+        if status_index >= 1 and status_index <= len(status_list):
+            # - 1 as index starts from 0 but our enumerate starts at 1
+            status_index -= 1
+            correct_input = True
+            selected_status = status_list[status_index]
+            print(f'You have selected {selected_status["Status"]}\n')
+            
+    order_sql = f'''SELECT order_info.OrderID, status.Status
         FROM order_info
         INNER JOIN status ON order_info.StatusID=status.StatusID
+        WHERE status.StatusID={selected_status["StatusID"]}
     '''
-    orders = db_helper.fetch(sql)
+    orders = db_helper.fetch(order_sql)
     
     for index, order in enumerate(orders, 1):
         print(f'[{index}] - {order}')
 
-    return orders
+    # return orders
 
 def show_orders_by_courier(db_helper: DBHelper):
-    sql = f'''SELECT order_info.OrderID, courier.CourierID, CONCAT_WS(" ", courier.Firstname, courier.Lastname) AS FullName
+    courier_sql = f'SELECT * FROM courier'
+    couriers = db_helper.fetch(courier_sql)
+    selected_courier = None
+    
+    for index, courier in enumerate(couriers, 1):
+        print(f'[{index}] - {courier}')
+
+    correct_input = False
+    while correct_input == False:
+        
+        try:    
+            courier_index = input('Please enter the index of the courier you would like to see orders for\nLeave blank to exit: ')
+            
+            if courier_index.strip() == '': return
+            
+            courier_index = int(courier_index)
+            
+        except Exception as e:
+            print('You must enter a number')
+            continue
+        
+        if courier_index >= 1 and courier_index <= len(couriers):
+            # - 1 as index starts from 0 but our enumerate starts at 1
+            courier_index -= 1
+            correct_input = True
+            selected_courier = couriers[courier_index]
+            print(f'You have selected {selected_courier["FirstName"]} {selected_courier["LastName"]}\n')
+            
+    order_sql = f'''SELECT order_info.OrderID, courier.CourierID, CONCAT_WS(" ", courier.Firstname, courier.Lastname) AS FullName
         FROM order_info
         INNER JOIN courier ON order_info.CourierID=courier.CourierID
+        WHERE courier.CourierID={selected_courier["CourierID"]}
     '''
-    orders = db_helper.fetch(sql)
+    
+    orders = db_helper.fetch(order_sql)
     
     for index, order in enumerate(orders, 1):
         print(f'[{index}] - {order}')
@@ -213,42 +264,62 @@ def show_orders_by_courier(db_helper: DBHelper):
 def remove_item(name: str, table: str, db_helper: DBHelper):
     items = show_items(name, table, db_helper)
     id_field_name = f'{name.capitalize()}ID'
-    selected_id = ''
+    selected_item = ''
         
     correct_input = False
     while correct_input == False:
-        selected_id = input(f'Please enter the {id_field_name} of the {name} ' 
-                            'you would like removed or enter "q" to return to the main ' 
-                            'menu: ')
         
-        for item in items:
-            if item.get(id_field_name) == selected_id:
-                correct_input = True
-        
-        if selected_id == 'q':
-            return
-        elif correct_input == True:
+        try:    
+            item_index = input('Please enter the index of the courier you would like to see orders for\nLeave blank to exit: ')
+            
+            if item_index.strip() == '': return
+            
+            item_index = int(item_index)
+            
+        except Exception as e:
+            print('You must enter a number')
             continue
-        else:    
-            print(f'You entered an incorrect {id_field_name}')
+        
+        if item_index >= 1 and item_index <= len(items):
+            # - 1 as index starts from 0 but our enumerate starts at 1
+            item_index -= 1
+            correct_input = True
+            selected_item = items[item_index]
+            print(f'You have selected {selected_item}\n')
     
     if name == 'order':
         try:
-            sql = f'DELETE FROM order_product WHERE {id_field_name} = "{selected_id}"'
-            db_helper.execute(sql)
-            sql = f'DELETE FROM {table} WHERE {id_field_name} = "{selected_id}"'
-            db_helper.execute(sql)
+            sql_1 = f'''DELETE FROM order_product WHERE OrderID="{selected_item["OrderID"]}";''' 
+            sql_2 = f'''DELETE FROM order_info WHERE OrderID="{selected_item["OrderID"]}";'''
+            sql_3 = f'''DELETE FROM customer WHERE CustomerID="{selected_item["CustomerID"]}";'''
+            
+            db_helper.execute(sql_1)
+            db_helper.execute(sql_2)
+            db_helper.execute(sql_3)
+            
+            print(f'{selected_item["OrderID"]} has been removed')
         except Exception as e:
             print(f'Something went wrong {e}')
-    else:    
+    elif name == 'product':    
         try:
-            sql = f'DELETE FROM {table} WHERE {id_field_name} = "{selected_id}"'
+            sql = f'''DELETE FROM product 
+                WHERE ProductID = {selected_item["ProductID"]}
+            '''
             db_helper.execute(sql)
+            
+            print(f'{selected_item["ProductName"]} has been removed')
         except Exception as e:
             print(f'Something went wrong {e}')
-    
-    print(f'Here is the updated list of {name}s:')
-    show_items(name, table, db_helper)
+    elif name == 'courier':
+        try:
+            sql = f'''DELETE FROM courier 
+                WHERE CourierID = {selected_item["CourierID"]}
+            '''
+            db_helper.execute(sql)
+            
+            print(f'{selected_item["FirstName"]} {selected_item["LastName"]} has been removed')
+        except Exception as e:
+            print(f'Something went wrong {e}')        
 
 def create_order_id():
     return shortuuid.uuid()[:7]
@@ -343,8 +414,6 @@ def add_order(db_helper: DBHelper):
     customer = Customer.get_user_input()
     customer_sql = f'INSERT INTO customer(FirstName, LastName, PhoneNumber, Address, Email) VALUES ("{customer.first_name}", "{customer.last_name}", "{customer.phone_number}", "{customer.address}", "{customer.email}");\n'
 
-    # # db_helper.execute(sql)
-    
     # # info to create an entry in the order table
     order_id = create_order_id()
     customer_id = customer.email
@@ -362,6 +431,7 @@ def add_order(db_helper: DBHelper):
     db_helper.execute_many(order_product_sql, products)
 
 def update_order(db_helper: DBHelper):
+    
     orders = show_items('order', 'order_info', db_helper)
     selected_order = dict()
     
@@ -374,7 +444,7 @@ def update_order(db_helper: DBHelper):
             
             if order_index.strip() == '': return
             
-            order_index = int(order_index) - 1 # decrease 1 as index starts from 0 but our enumerate starts at 1
+            order_index = int(order_index)
         except Exception as e:
             print('You must enter a number')
             continue
@@ -392,7 +462,27 @@ def update_order(db_helper: DBHelper):
     sql = f'UPDATE order_info SET CourierID={selected_order["CourierID"]}, StatusID={selected_order["StatusID"]} WHERE OrderID="{selected_order["OrderID"]}"'
     print(f'Updating your courier to {selected_order["CourierID"]} and status to {selected_order["StatusID"]}')
     db_helper.execute(sql)
+    
+    # update_items = input('Would you like to change the items of the order? [y/n]')
+    
+    # if update_items == 'y':
+    #     update_product_and_amounts(selected_order["OrderID"], db_helper)
+    # elif update_items == 'n':
+    #     print('Returning to main menu')
+    # else:
+    #     return
 
+# def update_product_and_amounts(order_id: str, db_helper: DBHelper):
+#     sql = f'''SELECT order_product.OrderID, order_product.ProductID, product.ProductName, order_product.Quantity
+#         FROM order_product
+#         INNER JOIN product
+#         ON order_product.ProductID = product.ProductID
+#         WHERE order_product.OrderID = "{order_id}"
+#     '''
+#     print(sql)
+#     items = db_helper.fetch(sql)
+#     print(items)
+    
 def update_product(db_helper: DBHelper):
     products = show_items('product', 'product', db_helper)
     selected_product = dict()
@@ -447,7 +537,7 @@ def update_courier(db_helper: DBHelper):
     selected_courier = dict()
     new_courier_first_name = None
     new_courier_last_name = None
-    new_courier_price = None
+    new_courier_phone_number = None
     
     correct_input = False
     while correct_input == False:

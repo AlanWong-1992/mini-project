@@ -22,10 +22,6 @@ products = menu.read_from_file(products_file)
 couriers = menu.read_from_file(couriers_file)
 orders = menu.read_from_file(orders_file)
 
-print(f'Products is a {type(products)}. Here is a list of your products: {products}')
-print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
-print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
-
 run_menu = True
 
 while run_menu:
@@ -115,8 +111,6 @@ while run_menu:
             
             if(view_order_choice == 1):
                 order_id = menu.show_all_orders('order_info','order_product', db_helper)
-                # see_order_products = input('Would you like to see the products for this order? [y/n]')
-                # if see_order_products
             elif(view_order_choice == 2):
                 menu.show_orders_by_status(db_helper)
             elif(view_order_choice == 3):

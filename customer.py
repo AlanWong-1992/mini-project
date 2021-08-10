@@ -1,11 +1,12 @@
 class Customer:
     
-    def __init__(self, first_name, last_name, phone_number, address, email):
+    def __init__(self, first_name, last_name, phone_number, address, email, id=None):
         self.first_name = first_name
         self.last_name = last_name
         self.phone_number = phone_number
         self.address = address
         self.email = email
+        self.id = id
     
     @classmethod
     def get_user_input(self):
