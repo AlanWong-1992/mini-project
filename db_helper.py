@@ -1,6 +1,5 @@
 import pymysql
 
-
 class DBHelper:
     
     def __init__(self, host, user, password, db):
