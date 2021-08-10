@@ -76,7 +76,6 @@ def view_orders_choice():
             input_is_correct = False
 
     return choice
-
 # writing list items to files 
 def write_to_file(filepath, items, to_json = False):
     try:
@@ -108,480 +107,257 @@ def create_courier_id():
     return shortuuid.uuid()[:6]
 
 # add item to items, name is either product or courier (str) and items is a list
-def add_product(db_helper: DBHelper):
-    product_name = str(input(f'\nPlease enter the name of the product: '))
+def add_product(products):
+    name = str(input(f'\nPlease enter a new product name: '))
     price = float(input(f'\nPlease enter the price of the new product: '))
     
-    sql = f'INSERT INTO product(ProductName, Price) VALUES ("{product_name}", "{price}")'
-    db_helper.execute(sql)
+    product = {
+        'id': create_product_id(),
+        'name': name,
+        'price': price
+    }
+    
+    products.append(product)
+    print(f'Updated products: {products}')
 
-    print(f'{product_name} with a price of {price} has been added to the menu!\n')
+def add_courier(couriers):
+    name = str(input(f'\nPlease enter a name: '))
+    phone_number = input(f'\nPlease enter a phone number: ')
+    
+    courier = {
+        'id': create_courier_id(),
+        'courier_name': name,
+        'phone_number': phone_number
+    }
+    
+    couriers.append(courier)
+    print(f'Updated courierss: {couriers}')
 
-def add_courier(db_helper: DBHelper):
-    first_name = str(input(f'\nPlease enter the first name: '))
-    last_name = str(input(f'\nPlease enter the last name: '))
-    phone_number = input(f'\nPlease enter the phone number: ')
-    
-    sql = f'INSERT INTO courier(FirstName, LastName, PhoneNumber) VALUES ("{first_name}", "{last_name}", "{phone_number}")'
-    
-    try:
-        db_helper.execute(sql)
-        print(f'{first_name} {last_name} with a phone number of {phone_number} has been added to the couriers\n')
-    except Exception as e:
-        print(f'There was an error {e}')
-
-def show_items(item_name: str, table_name: str, db_helper: DBHelper):
-    print(f'Here\'s a list of the {item_name}s\n')
-    
-    sql = f'SELECT * FROM {table_name}'
-    items = db_helper.fetch(sql)
-    
-    for index, item in enumerate(items, 1):
+def show_items(name: str, items: List[Dict]):
+    print(f'Here\'s a list of the {name}s\n')
+    for index, item in enumerate(items):
         print(f'[{index}] - {item}')
 
-    return items
+def show_orders_by_status(orders: List[Dict]):
+    orders_by_status = []
+    status = choose_status()
+    
+    for index, order in enumerate(orders):
+        if(status) == order['status']:
+            orders_by_status.append(order)
+    
+    print('These are your orders by status')
+    
+    for index, order in enumerate(orders_by_status):
+        if(status) == order['status']:
+            print(f'[{index}] - {order}')
 
-def show_all_orders(table1: str, table2: str, db_helper: DBHelper):
-    orders = show_items('order', 'order_info', db_helper)
-    order_id = ''
+def show_orders_by_courier(orders: List[Dict], couriers: List[Dict]):
+    orders_by_courier = []
+    courier_index = choose_courier(couriers)
     
-    correct_input = False
-    while correct_input == False:
-        order_id = input('If you would like to see the products in each other please enter the Order ID here'
-                         '\nOtherwise leave blank and hit enter to return to the main menu: ')
-        
-        if order_id.strip() == '':
-            return
-        
-        # see if the order id matches any of the order ids in the orders list
-        for order in orders:
-            if order["OrderID"] == order_id:
-                correct_input = True
-        
-        # leave the while loop if order id is correct              
-        if correct_input:
-            break
-        
-        print('You have not entered a correct Order ID')
+    for order in orders:
+        if(courier_index) == order['courier']:
+            orders_by_courier.append(order)
     
-    show_order_products(order_id, db_helper)
-
-def show_order_products(order_id: str, db_helper: DBHelper):
-    sql = f'''SELECT order_product.OrderID, product.ProductID, product.ProductName, order_product.Quantity, product.Price
-        FROM order_product
-        INNER JOIN product ON order_product.ProductID=product.ProductID
-        WHERE order_product.OrderID="{order_id}"
-    '''
-    items = db_helper.fetch(sql)
+    print('These are your orders by courier')
     
-    for index, item in enumerate(items, 1):
-        print(f'[{index}] - {item}')
-    
-def show_orders_by_status(db_helper: DBHelper):
-    status_sql = f'SELECT * FROM status'
-    status_list = db_helper.fetch(status_sql)
-    selected_status = None
-    
-    for index, status in enumerate(status_list, 1):
-        print(f'[{index}] - {status}')
-
-    correct_input = False
-    while correct_input == False:
-        
-        try:    
-            status_index = input('Please enter the index of the status you would like to see status for\nLeave blank to exit: ')
-            
-            if status_index.strip() == '': return
-            
-            status_index = int(status_index)
-            
-        except Exception as e:
-            print('You must enter a number')
-            continue
-        
-        if status_index >= 1 and status_index <= len(status_list):
-            # - 1 as index starts from 0 but our enumerate starts at 1
-            status_index -= 1
-            correct_input = True
-            selected_status = status_list[status_index]
-            print(f'You have selected {selected_status["Status"]}\n')
-            
-    order_sql = f'''SELECT order_info.OrderID, status.Status
-        FROM order_info
-        INNER JOIN status ON order_info.StatusID=status.StatusID
-        WHERE status.StatusID={selected_status["StatusID"]}
-    '''
-    orders = db_helper.fetch(order_sql)
-    
-    for index, order in enumerate(orders, 1):
+    for index, order in enumerate(orders_by_courier):
         print(f'[{index}] - {order}')
-
-    # return orders
-
-def show_orders_by_courier(db_helper: DBHelper):
-    courier_sql = f'SELECT * FROM courier'
-    couriers = db_helper.fetch(courier_sql)
-    selected_courier = None
-    
-    for index, courier in enumerate(couriers, 1):
-        print(f'[{index}] - {courier}')
-
-    correct_input = False
-    while correct_input == False:
-        
-        try:    
-            courier_index = input('Please enter the index of the courier you would like to see orders for\nLeave blank to exit: ')
-            
-            if courier_index.strip() == '': return
-            
-            courier_index = int(courier_index)
-            
-        except Exception as e:
-            print('You must enter a number')
-            continue
-        
-        if courier_index >= 1 and courier_index <= len(couriers):
-            # - 1 as index starts from 0 but our enumerate starts at 1
-            courier_index -= 1
-            correct_input = True
-            selected_courier = couriers[courier_index]
-            print(f'You have selected {selected_courier["FirstName"]} {selected_courier["LastName"]}\n')
-            
-    order_sql = f'''SELECT order_info.OrderID, courier.CourierID, CONCAT_WS(" ", courier.Firstname, courier.Lastname) AS FullName
-        FROM order_info
-        INNER JOIN courier ON order_info.CourierID=courier.CourierID
-        WHERE courier.CourierID={selected_courier["CourierID"]}
-    '''
-    
-    orders = db_helper.fetch(order_sql)
-    
-    for index, order in enumerate(orders, 1):
-        print(f'[{index}] - {order}')
-
-    return orders
                      
 # remove an existing item from items list
-def remove_item(name: str, table: str, db_helper: DBHelper):
-    items = show_items(name, table, db_helper)
-    id_field_name = f'{name.capitalize()}ID'
-    selected_item = ''
-        
-    correct_input = False
-    while correct_input == False:
-        
-        try:    
-            item_index = input('Please enter the index of the courier you would like to see orders for\nLeave blank to exit: ')
-            
-            if item_index.strip() == '': return
-            
-            item_index = int(item_index)
-            
-        except Exception as e:
-            print('You must enter a number')
-            continue
-        
-        if item_index >= 1 and item_index <= len(items):
-            # - 1 as index starts from 0 but our enumerate starts at 1
-            item_index -= 1
-            correct_input = True
-            selected_item = items[item_index]
-            print(f'You have selected {selected_item}\n')
+def remove_item(name, items):
+    show_items(name, items)
     
-    if name == 'order':
-        try:
-            sql_1 = f'''DELETE FROM order_product WHERE OrderID="{selected_item["OrderID"]}";''' 
-            sql_2 = f'''DELETE FROM order_info WHERE OrderID="{selected_item["OrderID"]}";'''
-            sql_3 = f'''DELETE FROM customer WHERE CustomerID="{selected_item["CustomerID"]}";'''
-            
-            db_helper.execute(sql_1)
-            db_helper.execute(sql_2)
-            db_helper.execute(sql_3)
-            
-            print(f'{selected_item["OrderID"]} has been removed')
+    index = -1
+    while index < 0 or index > len(items) - 1:
+        try: 
+            index = int(input('Choose the index of the item you want to delete (Must be a valid index number): '))
+        except ValueError:
+            print('You need to enter a valid number')
         except Exception as e:
-            print(f'Something went wrong {e}')
-    elif name == 'product':    
-        try:
-            sql = f'''DELETE FROM product 
-                WHERE ProductID = {selected_item["ProductID"]}
-            '''
-            db_helper.execute(sql)
+            print(f'You have an error: {str(e)}')
             
-            print(f'{selected_item["ProductName"]} has been removed')
-        except Exception as e:
-            print(f'Something went wrong {e}')
-    elif name == 'courier':
-        try:
-            sql = f'''DELETE FROM courier 
-                WHERE CourierID = {selected_item["CourierID"]}
-            '''
-            db_helper.execute(sql)
-            
-            print(f'{selected_item["FirstName"]} {selected_item["LastName"]} has been removed')
-        except Exception as e:
-            print(f'Something went wrong {e}')        
+    items.pop(index)
+    
+    print(f'Here is the updated list of {name}s:')
+    show_items(name, items)
 
 def create_order_id():
-    return shortuuid.uuid()[:7]
+    return shortuuid.uuid()
 
-def choose_courier(db_helper: DBHelper):
-    couriers = show_items('courier', 'courier', db_helper)
-    courier_id = None
+def choose_courier(couriers: List[Dict]):
+    if len(couriers) < 1: return 'You need to employ or add some couriers!'
+    show_items('courier', couriers)
+    
+    correct_index = False
+    
+    while correct_index == False:
+        index = input('Please choose a courier')
+        
+        try:
+            index = int(index)
+            if index >=0 and index <= len(couriers) - 1:
+                correct_index = True
+                print(f'your index is {index}') #and the couriers[{index}] is: {couriers[index]} and the id value is: {couriers[index]["id"]}')
+                print(f'couriers item: {couriers[index]}')
+                print(f'couriers id: {couriers[index].get("id")}')
+                return couriers[index]['id']
+            else:
+                print('Please enter a valid index from the options above')
+        except Exception as e:
+            print(f'Please enter a valid value the error is {e}')
+
+def choose_products(products: List[Dict]):
+    num_of_products = len(products)
+    order_basket = []
+
+    finished_selecting = False
+    while finished_selecting == False:
+        show_items('product', products)
+        product_index = input('Please choose from the list above or type in "f" to finish order selection: ')
+        
+        if product_index == 'f' and len(order_basket) > 0: 
+            finished_selecting = True
+            return order_basket
+        elif product_index == 'f' and len(order_basket) == 0:
+            print('You need to have at least 1 item in your order')
+            continue 
+        
+        try:
+            product_index = int(product_index)
+            quantity = int(input('How many would you like? '))
+            if product_index >= 0 and product_index <= num_of_products - 1:
+                order_basket.extend(repeat(products[product_index]['id'], quantity))
+            else:
+                print('You need to enter a correct product option and entries must be numbers')
+                
+        except Exception as e:
+            print(f'Please enter a valid value the error is {e}')
+
+def choose_status():
+    possible_status = ['Preparing', 'Out for delivery', 'Delivered']
+    for index, value in enumerate(possible_status):
+        print(f'[{index + 1}] - {value}')
     
     correct_input = False
     while correct_input == False:
-        
+        selected_status = input('Please pick a status for your order\n')
         try:
-            courier_id = int(input('Please select the courier id you want to deliver this order: '))
-
-            for courier in couriers:
-                if courier["CourierID"] == courier_id:
-                    return courier_id
-
-            print('You must enter a correct courier id. Try again')
-            
-        except Exception:
-            print('You must enter a number')
+            selected_status = int(selected_status)
+            if selected_status >= 1 and selected_status <= len(possible_status):
+                return possible_status[selected_status - 1]
+            else:
+                print('You need to enter a valid option')
+        except Exception as e:
+            print(f'Please enter a valid value')
     
-    return courier_id
-
-def choose_products(order_id, db_helper):
-    products = show_items('product', 'product', db_helper)
-    order = []
-
-    correct_input = False
-    while correct_input == False:
-        product_id = None
-        quantity = None
-        correct_product_id = False
         
-        try:
-            product_id = int(input('Please enter the product id you want to add to your order: '))
-            
-            for product in products:
-                if product["ProductID"] == product_id:
-                    correct_product_id = True
-            
-            if correct_product_id == False:
-                print('You need to enter a correct product id')
-                continue
-            
-        except Exception:
-            print('You must enter a number')
-            continue
-        
-        try:
-            quantity = int(input('Please enter the quantity you want: '))
-        except Exception:
-            print('You must enter a number')
-        
-        order.append((order_id, product_id, quantity))
-        
-        finished_selection = input('Would you like to add another product to your order?\n"n" to exit or hit enter to add more products: ')
-        
-        if finished_selection == 'n':
-            correct_input = True
-        else:
-            continue
-            
-    return order
-
-def choose_status(db_helper: DBHelper):
-    all_status = show_items('status', 'status', db_helper)
-    status_id = None
-    
-    correct_input = False
-    while correct_input == False:
-        
-        try:
-            status_id = int(input('Please select the status id you want to deliver this order'))
-
-            for status in all_status:
-                if status["StatusID"] == status_id:
-                    return status_id
-
-            print('You must enter a correct status id. Try again')
-            
-        except Exception:
-            print('You must enter a number')
-    
-    return status_id
-            
-def add_order(db_helper: DBHelper):
+def add_order(products: List[Dict], couriers: List[Dict], orders: List[Dict], create_order_id):
     print(f'Please enter the details of your order')
-    
-    # # Getting customer information to an entry in the customer table
-    customer = Customer.get_user_input()
-    customer_sql = f'INSERT INTO customer(FirstName, LastName, PhoneNumber, Address, Email) VALUES ("{customer.first_name}", "{customer.last_name}", "{customer.phone_number}", "{customer.address}", "{customer.email}");\n'
-
-    # # info to create an entry in the order table
     order_id = create_order_id()
-    customer_id = customer.email
-    courier_id = choose_courier(db_helper)
-    status_id = choose_status(db_helper)
-    order_info_sql = f'INSERT INTO order_info(OrderID, CustomerID, CourierID, StatusID) VALUES ("{order_id}", "{customer_id}", "{courier_id}", "{status_id}");\n'
+    customer_name = input('What is your full name? ')
+    customer_address = input('What is your address? ')
+    customer_phone_number = input('What is your phone number? ')
+    courier_id = choose_courier(couriers)
+    order_basket = choose_products(products)
+    status = choose_status()
     
-    # getting products
-    products = choose_products(order_id, db_helper)
-    order_product_sql = 'INSERT INTO order_product (OrderID, ProductID, Quantity) VALUES (%s, %s, %s);\n'
+    order = {
+        'order_id': order_id,
+        'customer_name': customer_name,
+        'customer_address': customer_address,
+        'customer_phone_number': customer_phone_number,
+        'courier': courier_id,
+        'products': order_basket,
+        'status': status
+    }
+    
+    orders.append(order)
 
-    #execute SQL statements after collecting info
-    db_helper.execute(customer_sql)
-    db_helper.execute(order_info_sql)
-    db_helper.execute_many(order_product_sql, products)
+def update_item(name, items: List[Dict], products: List[Dict] = None, couriers: List[Dict] = None):
+    # loop to choose an order to change
+    change_order = True
+    while change_order:
+        num_of_items = len(items)
+        # show user the list of items they can update
+        show_items(name, items)
+        item_index = item_to_change(num_of_items)
+        
+        if(item_index == 'q'): 
+            change_order = False
+            break
+        
+        selected_item = items[item_index]
+        
+        selected_field = select_field_to_change(selected_item)
+        
+        if (selected_field) == False: break
+        
+        update_item_field(name, selected_field, selected_item, products, couriers)
 
-def update_order(db_helper: DBHelper):
-    
-    orders = show_items('order', 'order_info', db_helper)
-    selected_order = dict()
-    
+def item_to_change(num_orders: int):
     correct_input = False
     while correct_input == False:
-        
-        try:    
-            order_index = input('Please enter the index of the order you would like to update\n'
-                                'Or leave blank to return to the main menu: ')
-            
-            if order_index.strip() == '': return
-            
-            order_index = int(order_index)
-        except Exception as e:
-            print('You must enter a number')
-            continue
-        
-        if order_index >= 1 and order_index <= len(orders):
-            # - 1 as index starts from 0 but our enumerate starts at 1
-            order_index -= 1
-            correct_input = True
-            selected_order = orders[order_index]
-            print(f'You have selected {selected_order["OrderID"]}')
-        
-    selected_order["CourierID"] = choose_courier(db_helper)
-    selected_order["StatusID"] = choose_status(db_helper)
+        index = input('Choose the index of the item you want to change or "q" to return to main menu: ')
     
-    sql = f'UPDATE order_info SET CourierID={selected_order["CourierID"]}, StatusID={selected_order["StatusID"]} WHERE OrderID="{selected_order["OrderID"]}"'
-    print(f'Updating your courier to {selected_order["CourierID"]} and status to {selected_order["StatusID"]}')
-    db_helper.execute(sql)
-    
-    # update_items = input('Would you like to change the items of the order? [y/n]')
-    
-    # if update_items == 'y':
-    #     update_product_and_amounts(selected_order["OrderID"], db_helper)
-    # elif update_items == 'n':
-    #     print('Returning to main menu')
-    # else:
-    #     return
-
-# def update_product_and_amounts(order_id: str, db_helper: DBHelper):
-#     sql = f'''SELECT order_product.OrderID, order_product.ProductID, product.ProductName, order_product.Quantity
-#         FROM order_product
-#         INNER JOIN product
-#         ON order_product.ProductID = product.ProductID
-#         WHERE order_product.OrderID = "{order_id}"
-#     '''
-#     print(sql)
-#     items = db_helper.fetch(sql)
-#     print(items)
-    
-def update_product(db_helper: DBHelper):
-    products = show_items('product', 'product', db_helper)
-    selected_product = dict()
-    new_product_name = None
-    new_product_price = None
-    
-    correct_input = False
-    while correct_input == False:
-        
-        try:    
-            product_index = input('Please enter the index of the product you would like to update\n'
-                                'Or leave blank to return to the main menu: ')
-            
-            if product_index.strip() == '': return
-            
-            product_index = int(product_index) 
-        except Exception as e:
-            print('You must enter a number')
-            continue
-        
-        print(f'product index value {product_index}')
-        if product_index >= 1 and product_index <= len(products):
-            # - 1 as index starts from 0 but our enumerate starts at 1
-            product_index -= 1
-            correct_input = True
-            selected_product = products[product_index]
-            print(f'You have selected {selected_product["ProductName"]}')
-            
-    correct_input = False
-    while correct_input == False:    
-        new_product_name = input('Enter a new product name: ')
+        if(index == 'q'): return 'q'
         
         try:
-            new_product_price = float(input('Enter a new product price: '))
-            if len(new_product_name) > 0 and new_product_price > 0:
+            index = int(index)
+            if(index >= 0 and index <= num_orders - 1):
                 correct_input = True
-        except Exception:
-            print('You need to enter a valid number for the new price')
-    
-    selected_product["ProductName"] = new_product_name
-    selected_product["Price"] = new_product_price
-    
-    sql = f'''UPDATE product 
-        SET ProductName="{selected_product["ProductName"]}", Price={selected_product["Price"]} 
-        WHERE ProductID={selected_product["ProductID"]}'''
-    db_helper.execute(sql)
-
-    print(f'Updated the name to {selected_product["ProductName"]} and price to {selected_product["Price"]}')
-
-def update_courier(db_helper: DBHelper):
-    couriers = show_items('courier', 'courier', db_helper)
-    selected_courier = dict()
-    new_courier_first_name = None
-    new_courier_last_name = None
-    new_courier_phone_number = None
-    
+                return index
+            else:
+                print('You need to enter a valid number')
+        except ValueError as ve:
+            print('You need to enter a correct value')
+            
+def select_field_to_change(item):
     correct_input = False
     while correct_input == False:
+        field_options_message = ''
+        num_options = len(item) - 1
+        field_options = []
         
-        try:    
-            courier_index = input('Please enter the index of the courier you would like to update\n'
-                                'Or leave blank to return to the main menu: ')
+        for count, key in enumerate(item):
             
-            if courier_index.strip() == '': return
+            field_options.append((count, key))
             
-            courier_index = int(courier_index) 
-        except Exception as e:
-            print('You must enter a number')
-            continue
-        
-        print(f'courier index value {courier_index}')
-        if courier_index >= 1 and courier_index <= len(couriers):
-            # - 1 as index starts from 0 but our enumerate starts at 1
-            courier_index -= 1
-            correct_input = True
-            selected_courier = couriers[courier_index]
-            print(f'You have selected {selected_courier["FirstName"]} {selected_courier["LastName"]}')
+            # skipping 0 as this is the id for the products, couriers, and orders 
+            # which the user shouldn't change but we want for our field options 
+            # list to easier select the key later in the function
+            if count == 0: continue 
             
-    correct_input = False
-    while correct_input == False:    
-        new_courier_first_name = input('Enter a new first name: ')
-        new_courier_last_name = input('Enter a new last name: ')
-        new_courier_phone_number = input('Enter a new phone number: ')
-        
-        if (len(new_courier_first_name) > 0 and len(new_courier_last_name) > 0 and len(new_courier_phone_number) > 0):
-            correct_input = True
-    
-    selected_courier["FirstName"] = new_courier_first_name
-    selected_courier["LastName"] = new_courier_last_name
-    selected_courier["PhoneNumber"] = new_courier_phone_number
-    
-    sql = f'''UPDATE courier 
-        SET FirstName="{selected_courier["FirstName"]}", 
-        LastName="{selected_courier["LastName"]}", 
-        PhoneNumber="{selected_courier["PhoneNumber"]}"
-        WHERE CourierID="{selected_courier["CourierID"]}"
-        '''
-        
-    db_helper.execute(sql)
+            field_options_message += f'{count} - {key}\n'
+            
+        index = input(f'What would you like to update?\n{field_options_message}')
 
-    print(f'Updated the name to {selected_courier["FirstName"]} {selected_courier["LastName"]} and phone number to {selected_courier["PhoneNumber"]}')
+        try:
+            index = int(index)
+            if(index >= 1 and index <= num_options):
+                correct_input = True
+                return field_options[index][1]
+            else:
+                print(f'You need to enter a number from 1 - {num_options}')
+        except ValueError as ve:
+            print('You need to enter a valid number')
+
+def update_item_field(name: str, item_key: str, item: Dict, products: List[Dict] = None, couriers: List[Dict]=None):
+    #if-else block just for updating orders
+    if (name == 'order' and item_key == 'courier'):
+        courier_id = choose_courier(couriers)
+        item[item_key] = courier_id
+        return
+    elif (name == 'order' and item_key == 'products'):
+        order_basket = choose_products(products)
+        item[item_key] = order_basket
+        return
+    elif (name == 'order' and item_key == 'status'):
+        status = choose_status()
+        item[item_key] = status
+        return
+    
+    new_value = input(f'Please enter the new {item_key}: ')
+    item[item_key] = new_value
     
