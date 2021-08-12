@@ -1,4 +1,6 @@
-class Product:
+from item import Item
+
+class Product(Item):
     
     def __init__(self, name, price, quantity, id=None):
         self.name = name

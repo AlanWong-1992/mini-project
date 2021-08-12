@@ -1,4 +1,6 @@
-class Customer:
+from item import Item
+
+class Customer(Item):
     
     def __init__(self, first_name, last_name, phone_number, address, email, id=None):
         self.first_name = first_name

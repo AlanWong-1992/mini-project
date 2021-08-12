@@ -1,4 +1,6 @@
-class Courier:
+from item import Item
+
+class Courier(Item):
     
     def __init__(self, first_name, last_name, phone_number, email, id=None):
         self.first_name = first_name
