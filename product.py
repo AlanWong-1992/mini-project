@@ -3,14 +3,14 @@ from item import Item
 class Product(Item):
     
     def __init__(self, name, price, quantity, id=None):
+        self.id = id
         self.name = name
         self.price = price
         self.quantity = quantity
-        self.id = id
     
     # used to instantiate an object from user input
     @classmethod
-    def create_product(self):
+    def create_product_user(self):
         correct_input = False
         
         while correct_input == False:

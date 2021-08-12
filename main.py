@@ -1,18 +1,10 @@
 import menu
 import pymysql
 import os
+from product import Product
+from listhelper import ListHelper
 from db_helper import DBHelper
 from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
-host = os.environ.get("mysql_host")
-user = os.environ.get("mysql_user")
-password = os.environ.get("mysql_pass")
-database = os.environ.get("mysql_db")
-
-# instantiate DB object
-db_helper = DBHelper(host, user, password, database)
 
 # populating lists from files
 products_file = './products.csv'
@@ -21,10 +13,23 @@ orders_file = './orders.csv'
 products = menu.read_from_file(products_file)
 couriers = menu.read_from_file(couriers_file)
 orders = menu.read_from_file(orders_file)
+customers = []
 
 print(f'Products is a {type(products)}. Here is a list of your products: {products}')
 print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
 print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
+print(f'Orders is a {type(customers)} and Here is a list of your customers: {customers}')
+
+# Load environment variables from .env file
+load_dotenv()
+host = os.environ.get("mysql_host")
+user = os.environ.get("mysql_user")
+password = os.environ.get("mysql_pass")
+database = os.environ.get("mysql_db")
+
+# instantiate DB and List Helper objects
+db_helper = DBHelper(host, user, password, database)
+list_helper = ListHelper()
 
 run_menu = True
 
@@ -52,19 +57,20 @@ while run_menu:
         
         # add a new product to products
         elif (sub_menu_choice == 1):
-            menu.add_product(products)
+            product = Product.create_product_user()
+            list_helper.add_item(product, products)
             
         # retrieve the current product list
         elif (sub_menu_choice == 2):
-            menu.show_items('product', products)
+            list_helper.show_items(products)
             
         # update a product chosen from the product list
         elif (sub_menu_choice == 3):
-            menu.update_item('product', products)
+            list_helper.update_item(products)
             
         # deleting a product from the product list
         elif (sub_menu_choice == 4):
-            menu.remove_item('product', products)
+            list_helper.delete_item(products)
     
     # courier options    
     elif (main_menu_choice == 2):

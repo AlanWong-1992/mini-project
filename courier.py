@@ -3,11 +3,11 @@ from item import Item
 class Courier(Item):
     
     def __init__(self, first_name, last_name, phone_number, email, id=None):
+        self.id = id
         self.first_name = first_name
         self.last_name = last_name
         self.phone_number = phone_number
         self.email = email
-        self.id = id
     
     # used to instantiate an object from user input
     @classmethod
