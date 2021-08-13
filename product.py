@@ -23,7 +23,7 @@ class Product(Item):
             except Exception as e:
                 print(f'There was an error {e}')
                 continue
-    
+            
     # id
     @property
     def id(self):
@@ -63,18 +63,20 @@ class Product(Item):
     def price(self):
         del self._price
     
-    # quanitity
+    # quantity
     @property
-    def quanitity(self):
-        return self._quanitity
+    def quantity(self):
+        return self._quantity
     
-    @quanitity.setter
-    def quanitity(self, value):
-        self._quanitity = value
+    @quantity.setter
+    def quantity(self, value):
+        self._quantity = value
         
-    @quanitity.deleter
-    def quanitity(self):
-        del self._quanitity
+    @quantity.deleter
+    def quantity(self):
+        del self._quantity
+    
+    
         
 # # apple_muffin = Product.create_product()
 # product_1 = Product('apple muffin', 2.90, 20)

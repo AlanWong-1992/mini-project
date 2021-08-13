@@ -11,14 +11,17 @@ products_file = './products.csv'
 couriers_file = './couriers.csv'
 orders_file = './orders.csv'
 products = menu.read_from_file(products_file)
-couriers = menu.read_from_file(couriers_file)
-orders = menu.read_from_file(orders_file)
-customers = []
+# couriers = menu.read_from_file(couriers_file)
+# orders = menu.read_from_file(orders_file)
+# products = []
+# couriers = []
+# orders = []
+# customers = []
 
 print(f'Products is a {type(products)}. Here is a list of your products: {products}')
-print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
-print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
-print(f'Orders is a {type(customers)} and Here is a list of your customers: {customers}')
+# print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
+# print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
+# print(f'Orders is a {type(customers)} and Here is a list of your customers: {customers}')
 
 # Load environment variables from .env file
 load_dotenv()
@@ -41,8 +44,8 @@ while run_menu:
     # exits the application and saves to .txt files    
     if (main_menu_choice == 0):
         menu.write_to_file(products_file, products)
-        menu.write_to_file(couriers_file, couriers)
-        menu.write_to_file(orders_file, orders)
+        # menu.write_to_file(couriers_file, couriers)
+        # menu.write_to_file(orders_file, orders)
         print('\nExiting and saving application! See you next time.')
         run_menu = False
     
@@ -59,7 +62,8 @@ while run_menu:
         elif (sub_menu_choice == 1):
             product = Product.create_product_user()
             list_helper.add_item(product, products)
-            
+            menu.write_to_file(products_file, products)
+
         # retrieve the current product list
         elif (sub_menu_choice == 2):
             list_helper.show_items(products)

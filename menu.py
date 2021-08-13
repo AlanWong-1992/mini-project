@@ -3,7 +3,11 @@ import shortuuid
 from typing import List, Dict
 from itertools import repeat
 from db_helper import DBHelper
+from product import Product
+from courier import Courier
+# from order import Order
 from customer import Customer
+
 
 # main menu, user chooses an option 
 def main_menu_choice():
@@ -77,24 +81,46 @@ def view_orders_choice():
 
     return choice
 # writing list items to files 
+
+# def write_to_file(filepath, items, to_json = False):
+#     try:
+#         with open(filepath, 'w') as file:
+#             keys = items[0].keys()
+#             writer = csv.DictWriter(file, keys)
+#             writer.writeheader()
+#             writer.writerows(items)
+#     except Exception as e:
+#             print(f'There is an error {str(e)}')
+
 def write_to_file(filepath, items, to_json = False):
     try:
         with open(filepath, 'w') as file:
-            keys = items[0].keys()
+            keys = vars(items[0]).keys()
+            writer = csv.writer(file)
             writer = csv.DictWriter(file, keys)
             writer.writeheader()
-            writer.writerows(items)
+            for item in items:
+                writer.writerow(vars(item))
     except Exception as e:
             print(f'There is an error {str(e)}')
 
 # reading files and populate list items            
-def read_from_file(filepath):
+def read_from_file(items: str, filepath: str):
     try:
         file_items = []
         with open(filepath, 'r') as file:
-            reader = csv.DictReader(file)
+            reader = csv.reader(file)
+            next(reader)
             for line in reader:
-                file_items.append(line)
+                
+                if items == 'products':
+                    file_items.append(Product(line[0], line[1], line[2], line[3]))
+                elif items == 'couriers':
+                    file_items.append(Courier(line[0], line[1], line[2], line[3], line[4]))
+                # elif items == 'orders':
+                #     file_items.append(Order(line[0], line[1], line[2], line[3]))
+                elif items == 'customers':
+                    file_items.append(Customer(line[0], line[1], line[2], line[3], line[4], line[5]))
         return file_items
     except FileNotFoundError as fnfe:
         print(f'Your file was not found')

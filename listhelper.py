@@ -88,7 +88,7 @@ class ListHelper:
             # num_options = len(item) - 1
             num_options = vars(item)
             print(f'Number of options: {num_options} and the length is {len(num_options)}')
-            
+            # correct_input = True
             # field_options = []
             
             # for count, key in enumerate(item, 1):
