@@ -105,7 +105,7 @@ def write_to_file(filepath, items, to_json = False):
             print(f'There is an error {str(e)}')
 
 # reading files and populate list items            
-def read_from_file(items: str, filepath: str):
+def read_from_file(name: str, filepath: str):
     try:
         file_items = []
         with open(filepath, 'r') as file:
@@ -113,20 +113,23 @@ def read_from_file(items: str, filepath: str):
             next(reader)
             for line in reader:
                 
-                if items == 'products':
+                if name == 'products':
                     print(f'line 0 is {line[0]}, line 1 is {line[1]}, line 2 is {line[2]}, line 3 is {line[3]}')
                     file_items.append(Product(line[0], line[1], line[2], line[3]))
-                elif items == 'couriers':
+                elif name == 'couriers':
+                    print('Creating a courier object...')
                     file_items.append(Courier(line[0], line[1], line[2], line[3], line[4]))
-                # elif items == 'orders':
+                # elif name == 'orders':
                 #     file_items.append(Order(line[0], line[1], line[2], line[3]))
-                elif items == 'customers':
+                elif name == 'customers':
                     file_items.append(Customer(line[0], line[1], line[2], line[3], line[4], line[5]))
         return file_items
     except FileNotFoundError as fnfe:
         print(f'Your file was not found')
         return []
-
+    except Exception as e:
+        print(f'There was an error {e}. Returning an empty list')
+        return []
 def create_product_id():
     return shortuuid.uuid()[:7]
 

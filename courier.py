@@ -2,13 +2,16 @@ from item import Item
 
 class Courier(Item):
     
-    def __init__(self, first_name, last_name, phone_number, email, id=None):
+    def __init__(self, id, first_name, last_name, phone_number, email):
         self.id = id
         self.first_name = first_name
         self.last_name = last_name
         self.phone_number = phone_number
         self.email = email
-    
+        
+    def __repr__(self):
+        return f'id: {self.id} | first name: {self.first_name} | last name: {self.last_name} | phone number: {self.phone_number} | email: {self.email}'
+
     # used to instantiate an object from user input
     @classmethod
     def create_courier_user(self):
@@ -16,11 +19,12 @@ class Courier(Item):
         
         while correct_input == False:
             try:
+                id = None
                 first_name = input('What is the first name? ')
                 last_name = input('What is the last name? ')
                 phone_number = input('What is the phone number? ')
                 email = input('What is the email? ')
-                return self(first_name, last_name, phone_number, email)
+                return self(id, first_name, last_name, phone_number, email)
             
             except Exception as e:
                 print(f'There was an error {e}')

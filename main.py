@@ -2,6 +2,7 @@ import menu
 import pymysql
 import os
 from product import Product
+from courier import Courier
 from listhelper import ListHelper
 from db_helper import DBHelper
 from dotenv import load_dotenv
@@ -22,6 +23,7 @@ products_file = './products.csv'
 couriers_file = './couriers.csv'
 orders_file = './orders.csv'
 products = menu.read_from_file('products', products_file)
+couriers = menu.read_from_file('couriers', couriers_file)
 
 # couriers = menu.read_from_file(couriers_file)
 # orders = menu.read_from_file(orders_file)
@@ -45,7 +47,7 @@ while run_menu:
     # exits the application and saves to .txt files    
     if (main_menu_choice == 0):
         menu.write_to_file(products_file, products)
-        # menu.write_to_file(couriers_file, couriers)
+        menu.write_to_file(couriers_file, couriers)
         # menu.write_to_file(orders_file, orders)
         print('\nExiting and saving application! See you next time.')
         run_menu = False
@@ -63,7 +65,6 @@ while run_menu:
         elif (sub_menu_choice == 1):
             product = Product.create_product_user()
             list_helper.add_item(product, products)
-            menu.write_to_file(products_file, products)
 
         # retrieve the current product list
         elif (sub_menu_choice == 2):
@@ -77,32 +78,58 @@ while run_menu:
         elif (sub_menu_choice == 4):
             list_helper.delete_item(products)
     
-    # courier options    
+    # courier options
     elif (main_menu_choice == 2):
-        
-        # user chooses an option
-        sub_menu_choice = sub_menu_choice = menu.sub_menu_choice('courier')
-                
-        # return to the previous menu
+        sub_menu_choice = menu.sub_menu_choice('courier')
+            
+        # returns to previous menu
         if (sub_menu_choice == 0):
             print('\nReturning to main Menu')
             continue
         
-        # adding a new courier to the courier list    
+        # add a new courier to couriers
         elif (sub_menu_choice == 1):
-            menu.add_courier(couriers)
-            
-        # retreiving the current courier list
+            courier = Courier.create_courier_user()
+            list_helper.add_item(courier, couriers)
+
+        # retrieve the current courier list
         elif (sub_menu_choice == 2):
-            menu.show_items('courier', couriers)
+            list_helper.show_items(couriers)
             
-        # updating a courier chosen from the courier list
+        # update a courier chosen from the courier list
         elif (sub_menu_choice == 3):
-            menu.update_item('courier', couriers)
+            list_helper.update_item('couriers', couriers)
             
         # deleting a courier from the courier list
         elif (sub_menu_choice == 4):
-            menu.remove_item('courier', couriers)
+            list_helper.delete_item(couriers)
+            
+    # # courier options    
+    # elif (main_menu_choice == 2):
+        
+    #     # user chooses an option
+    #     sub_menu_choice = sub_menu_choice = menu.sub_menu_choice('courier')
+                
+    #     # return to the previous menu
+    #     if (sub_menu_choice == 0):
+    #         print('\nReturning to main Menu')
+    #         continue
+        
+    #     # adding a new courier to the courier list    
+    #     elif (sub_menu_choice == 1):
+    #         menu.add_courier(couriers)
+            
+    #     # retreiving the current courier list
+    #     elif (sub_menu_choice == 2):
+    #         menu.show_items('courier', couriers)
+            
+    #     # updating a courier chosen from the courier list
+    #     elif (sub_menu_choice == 3):
+    #         menu.update_item('courier', couriers)
+            
+    #     # deleting a courier from the courier list
+    #     elif (sub_menu_choice == 4):
+    #         menu.remove_item('courier', couriers)
     
     # order options    
     elif (main_menu_choice == 3):
