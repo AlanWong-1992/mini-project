@@ -114,6 +114,7 @@ def read_from_file(items: str, filepath: str):
             for line in reader:
                 
                 if items == 'products':
+                    print(f'line 0 is {line[0]}, line 1 is {line[1]}, line 2 is {line[2]}, line 3 is {line[3]}')
                     file_items.append(Product(line[0], line[1], line[2], line[3]))
                 elif items == 'couriers':
                     file_items.append(Courier(line[0], line[1], line[2], line[3], line[4]))

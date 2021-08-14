@@ -26,15 +26,18 @@ class ListHelper:
     
     def delete_item(self, items: List[Union[Customer, Product, Courier]]):
         self.show_items(items)
-    
+        num_items = len(items)
         index = -1
+        
         while index < 1 or index > len(items):
-            try: 
-                index = int(input('Choose the index of the item you want to delete (Must be a valid index number): '))
-            except ValueError:
-                print('You need to enter a valid number')
-            except Exception as e:
-                print(f'You have an error: {str(e)}')
+            index = int(input('Choose the index of the item you want to delete (Must be a valid index number): '))
+            index = self._input_num_handler(index, 1, num_items)
+            # try: 
+            #     index = int(input('Choose the index of the item you want to delete (Must be a valid index number): '))
+            # except ValueError:
+            #     print('You need to enter a valid number')
+            # except Exception as e:
+            #     print(f'You have an error: {str(e)}')
     
         items.pop(index - 1) # reduce by 1 to account for 0 index for lists
         
@@ -61,9 +64,9 @@ class ListHelper:
             
             if (selected_field) == False: break
             
-            update_item_field(name, selected_field, selected_item, products, couriers)
+            self._update_item_field(selected_field, selected_item)
 
-    def _item_to_change(self, num_orders: int):
+    def _item_to_change(self, num_orders: int) -> int:
         correct_input = False
         while correct_input == False:
             index = input('Choose the index of the item you want to change or "q" to return to main menu: ')
@@ -81,7 +84,7 @@ class ListHelper:
             except ValueError as ve:
                 print('You need to enter a correct value')
                 
-    def _select_field_to_change(self, item):
+    def _select_field_to_change(self, item) -> str:
         correct_input = False
         while correct_input == False:
             field_options_message = ''
@@ -89,45 +92,67 @@ class ListHelper:
             num_options = vars(item)
             print(f'Number of options: {num_options} and the length is {len(num_options)}')
             # correct_input = True
-            # field_options = []
+            field_options = []
             
-            # for count, key in enumerate(item, 1):
+            for count, key in enumerate(num_options, 0):
                 
-            #     field_options.append((count, key))
+                field_options.append((count, key))
                 
-            #     # skipping 0 as this is the id for the products, couriers, and orders 
-            #     # which the user shouldn't change but we want for our field options 
-            #     # list to easier select the key later in the function
-            #     if count == 0: continue 
+                # skipping 0 as this is the id for the products, couriers, and orders 
+                # which the user shouldn't change but we want for our field options 
+                # list to easier select the key later in the function
+                if count == 0: continue 
                 
-            #     field_options_message += f'{count} - {key}\n'
+                field_options_message += f'{count} - {key}\n'
                 
-            # index = input(f'What would you like to update?\n{field_options_message}')
+            index = input(f'What would you like to update?\n{field_options_message}')
 
-            # try:
-            #     index = int(index)
-            #     if(index >= 1 and index <= num_options):
-            #         correct_input = True
-            #         return field_options[index][1]
-            #     else:
-            #         print(f'You need to enter a number from 1 - {num_options}')
-            # except ValueError as ve:
-            #     print('You need to enter a valid number')
+            try:
+                index = int(index)
+                if(index >= 1 and index <= len(num_options)):
+                    correct_input = True
+                    print(field_options[index][1])
+                    return field_options[index][1]
+                else:
+                    print(f'You need to enter a number from 1 - {num_options}')
+            except ValueError as ve:
+                print('You need to enter a valid number')
 
-    def update_item_field(name: str, item_key: str, item: Dict, products: List[Dict] = None, couriers: List[Dict]=None):
-        #if-else block just for updating orders
-        if (name == 'order' and item_key == 'courier'):
-            courier_id = choose_courier(couriers)
-            item[item_key] = courier_id
-            return
-        elif (name == 'order' and item_key == 'products'):
-            order_basket = choose_products(products)
-            item[item_key] = order_basket
-            return
-        elif (name == 'order' and item_key == 'status'):
-            status = choose_status()
-            item[item_key] = status
-            return
+    def _update_product(self, product_field: str, product: Product):
+        new_value = input(f'Please enter the new {item_field}: ')
+        item.item_field(new_value)  
         
-        new_value = input(f'Please enter the new {item_key}: ')
-        item[item_key] = new_value
+        if product_field == 'name':
+            pass
+        elif product_field == 'price':
+            pass
+        elif product_field == 'quantity':
+            pass
+        
+    def _update_item_field(self, item_field: str, item: Union[Customer, Product, Courier]):
+        #if-else block just for updating orders
+        # if (name == 'order' and item_key == 'courier'):
+        #     courier_id = choose_courier(couriers)
+        #     item[item_key] = courier_id
+        #     return
+        # elif (name == 'order' and item_key == 'products'):
+        #     order_basket = choose_products(products)
+        #     item[item_key] = order_basket
+        #     return
+        # elif (name == 'order' and item_key == 'status'):
+        #     status = choose_status()
+        #     item[item_key] = status
+        #     return
+        
+        new_value = input(f'Please enter the new {item_field}: ')
+        item.item_field(new_value)
+    
+    def _input_num_handler(self, index: int, range_low: int, range_high: int) -> int:
+        try:
+            index = int(index)
+            if(index >= range_low and index <= range_high):
+                return index
+            else:
+                print(f'You need to enter a number from {range_low} - {range_high}')
+        except ValueError as ve:
+            print('You need to enter a valid number')

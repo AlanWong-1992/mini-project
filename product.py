@@ -2,7 +2,7 @@ from item import Item
 
 class Product(Item):
     
-    def __init__(self, name, price, quantity, id=None):
+    def __init__(self, id, name, price, quantity):
         self.id = id
         self.name = name
         self.price = price
@@ -15,10 +15,11 @@ class Product(Item):
         
         while correct_input == False:
             try:
+                id = None
                 name = input('What is the name of the product? ')
                 price = input('How much does it cost? ')
                 quantity = input('How many do we have in stock? ')
-                return self(name, price, quantity)
+                return self(id, name, price, quantity)
             
             except Exception as e:
                 print(f'There was an error {e}')
@@ -75,16 +76,3 @@ class Product(Item):
     @quantity.deleter
     def quantity(self):
         del self._quantity
-    
-    
-        
-# # apple_muffin = Product.create_product()
-# product_1 = Product('apple muffin', 2.90, 20)
-# print(f'This is your apple_muffin: {product_1.name}, {product_1.price}, {product_1.quantity}')
-# print(product_1.name)
-# product_1.name = 'pear muffin'
-# del product_1.name
-# print(product_1.price)
-# product_1.name = 'banana muffin'
-# print(product_1.name)
-# print(product_1.id)
