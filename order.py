@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 from courier import Courier
 from customer import Customer
 from product import Product
@@ -7,16 +7,16 @@ from list_helper import ListHelper
 
 class Order():
     
-    def __init__(self, id: str, customer_id: str, courier_id: str, customer_phone_number: str, customer_email: str, create_id: callable):
-        self.create_id = create_id
+    def __init__(self, id: str, customer_id: str, customer_phone_number: str, customer_email: str, courier_id: str, products: Dict[str, int]):
         self.id = id
         self.customer_id = customer_id
-        self.courier_id = courier_id
         self.customer_phone_number = customer_phone_number
         self.customer_email = customer_email
+        self.courier_id = courier_id
+        self.products = products
         
     def __repr__(self):
-        return f'id: {self.id} | customer id: {self.customer_id} | customer phone number: {self.customer_phone_number} | customer email: {self.customer_email}'
+        return f'id: {self.id} | customer id: {self.customer_id} | customer phone number: {self.customer_phone_number} | customer email: {self.customer_email} | courier id: {self.courier_id} | products: {self.products}'
 
     # used to instantiate an object from user input
     @classmethod
@@ -25,20 +25,10 @@ class Order():
         while correct_input == False:
             try:
                 id = create_id()
-                # customer = Customer.create_customer_user(create_id)
-                # print(f'The order ID is {id}')
-                # print(customer)
-                # courier_id = list_helper.choose_courier(couriers)
-                # print(f'the returned value of choose_courier is {courier_id}')
+                customer = Customer.create_customer_user(create_id)
+                courier_id = list_helper.choose_courier(couriers)
                 products = list_helper.choose_products(products)
-                print(products)
-                return
-                # first_name = input('What is the first name? ')
-                # last_name = input('What is the last name? ')
-                # phone_number = input('What is the phone number? ')
-                # email = input('What is the email? ')
-                # return self(id, first_name, last_name, phone_number, email)
-            
+                return self(id, customer.id, customer.phone_number, customer.email, courier_id, products)
             except Exception as e:
                 print(f'There was an error {e}')
                 continue
@@ -107,8 +97,3 @@ class Order():
     @email.deleter
     def email(self):
         del self._email
-        
-# apple_muffin = Courier.create_product()
-# order = Courier('Usain', 'Bolt', '079883294729', 'usain@bolt.com')
-# print(f'Courier: {order.first_name} {order.last_name}, {order.phone_number}, {order.email}')
-# print(f'id is {order.id}')

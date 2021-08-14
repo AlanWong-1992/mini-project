@@ -1,10 +1,12 @@
 import csv
 import shortuuid
+import ast
 from typing import List, Dict
 from itertools import repeat
 from db_helper import DBHelper
 from product import Product
 from courier import Courier
+from order import Order
 # from order import Order
 from customer import Customer
 
@@ -36,7 +38,7 @@ def main_menu_choice():
 
 # next menu choice, for CRUD operations for products and couriers
 def sub_menu_choice(products_or_couriers):
-    input_is_correct = False;
+    input_is_correct = False
     while input_is_correct == False:
         try:
             choice = int(input('\nPlease choose an option by selecting a number:\n'
@@ -60,7 +62,7 @@ def sub_menu_choice(products_or_couriers):
     return choice
 
 def view_orders_choice():
-    input_is_correct = False;
+    input_is_correct = False
     while input_is_correct == False:
         try:
             choice = int(input('\nPlease choose an option by selecting a number:\n'
@@ -96,7 +98,6 @@ def write_to_file(filepath, items, to_json = False):
     try:
         with open(filepath, 'w') as file:
             keys = vars(items[0]).keys()
-            writer = csv.writer(file)
             writer = csv.DictWriter(file, keys)
             writer.writeheader()
             for item in items:
@@ -117,10 +118,9 @@ def read_from_file(name: str, filepath: str):
                     print(f'line 0 is {line[0]}, line 1 is {line[1]}, line 2 is {line[2]}, line 3 is {line[3]}')
                     file_items.append(Product(line[0], line[1], line[2], line[3]))
                 elif name == 'couriers':
-                    print('Creating a courier object...')
                     file_items.append(Courier(line[0], line[1], line[2], line[3], line[4]))
-                # elif name == 'orders':
-                #     file_items.append(Order(line[0], line[1], line[2], line[3]))
+                elif name == 'orders':
+                    file_items.append(Order(line[0], line[1], line[2], line[3], line[4], ast.literal_eval(line[5])))
                 elif name == 'customers':
                     file_items.append(Customer(line[0], line[1], line[2], line[3], line[4], line[5]))
         return file_items

@@ -29,16 +29,10 @@ products = menu.read_from_file('products', products_file)
 couriers = menu.read_from_file('couriers', couriers_file)
 orders = menu.read_from_file('orders', orders_file)
 
-# couriers = menu.read_from_file(couriers_file)
-# orders = menu.read_from_file(orders_file)
-# products = []
-# couriers = []
-# orders = []
-# customers = []
-
-print(f'Products is a {type(products)}. Here is a list of your products: {products}')
+# print(f'Products is a {type(products)}. Here is a list of your products: {products}')
 # print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
-# print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
+print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
+print(type(orders[0].products))
 # print(f'Orders is a {type(customers)} and Here is a list of your customers: {customers}')
 
 run_menu = True
@@ -52,7 +46,7 @@ while run_menu:
     if (main_menu_choice == 0):
         menu.write_to_file(products_file, products)
         menu.write_to_file(couriers_file, couriers)
-        # menu.write_to_file(orders_file, orders)
+        menu.write_to_file(orders_file, orders)
         print('\nExiting and saving application! See you next time.')
         run_menu = False
     
@@ -120,6 +114,7 @@ while run_menu:
         # add a new order to orders
         elif (sub_menu_choice == 1):
             order = Order.create_order_user(create_id, couriers, products, list_helper)
+            print(order)
             list_helper.add_item(order, orders)
 
         # retrieve the current order list
