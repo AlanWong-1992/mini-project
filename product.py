@@ -1,6 +1,5 @@
-from item import Item
-
-class Product(Item):
+from create_id import create_id
+class Product():
     
     def __init__(self, id, name, price, quantity):
         self.id = id
@@ -13,12 +12,12 @@ class Product(Item):
         
     # used to instantiate an object from user input
     @classmethod
-    def create_product_user(self):
+    def create_product_user(self, create_id):
         correct_input = False
         
         while correct_input == False:
             try:
-                id = None
+                id = create_id()
                 name = input('What is the name of the product? ')
                 price = input('How much does it cost? ')
                 quantity = input('How many do we have in stock? ')

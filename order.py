@@ -1,6 +1,7 @@
 from typing import List
 from courier import Courier
 from customer import Customer
+from product import Product
 from create_id import create_id
 from list_helper import ListHelper
 
@@ -19,16 +20,18 @@ class Order():
 
     # used to instantiate an object from user input
     @classmethod
-    def create_order_user(self, create_id, couriers: List[Courier], list_helper: ListHelper):
+    def create_order_user(self, create_id, couriers: List[Courier], products: List[Product], list_helper: ListHelper):
         correct_input = False
         while correct_input == False:
             try:
                 id = create_id()
-                customer = Customer.create_customer_user(create_id)
+                # customer = Customer.create_customer_user(create_id)
                 # print(f'The order ID is {id}')
                 # print(customer)
-                courier_id = list_helper.choose_courier(couriers)
-                print(f'the returned value of choose_courier is {courier}')
+                # courier_id = list_helper.choose_courier(couriers)
+                # print(f'the returned value of choose_courier is {courier_id}')
+                products = list_helper.choose_products(products)
+                print(products)
                 return
                 # first_name = input('What is the first name? ')
                 # last_name = input('What is the last name? ')

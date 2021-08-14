@@ -2,6 +2,7 @@ from typing import List, Dict, Union
 from customer import Customer
 from product import Product
 from courier import Courier
+from itertools import repeat
 
 class ListHelper:
     
@@ -214,15 +215,49 @@ class ListHelper:
         index = self._input_num_handler(input_msg, index, 1, num_of_couriers) - 1
         # print(f'index is {index}\nThe courier is {couriers[index]}\nThe first name is {couriers[index].first_name}')
         return couriers[index].id
-        # try:
-        #     index = int(index)
-        #     if index >=0 and index <= len(couriers) - 1:
-        #         correct_index = True
-        #         print(f'your index is {index}') #and the couriers[{index}] is: {couriers[index]} and the id value is: {couriers[index]["id"]}')
-        #         print(f'couriers item: {couriers[index]}')
-        #         print(f'couriers id: {couriers[index].get("id")}')
-        #         return couriers[index]['id']
-        #     else:
-        #         print('Please enter a valid index from the options above')
-        # except Exception as e:
-        #     print(f'Please enter a valid value the error is {e}')
+        
+    def choose_products(self, products: List[Product]):
+        order_basket = {}
+
+        finished_selecting = False
+        while finished_selecting == False:
+            self.show_items(products)
+            
+            input_msg = 'Please choose from the list above or type in "q" or leave blank to finish order selection: '
+            index = -1
+            num_of_products = len(products)
+            product_index = self._input_num_handler(input_msg, index, 1, num_of_products, allow_exit=True)
+            
+            input_msg = 'How many would you like? Please enter an amount or type in "q" or leave blank again to exit: '
+            index = -1
+            quantity = self._input_num_handler(input_msg, index, 1, 999, allow_exit=True) #range high set at an arbitary high number
+            
+            
+            if (product_index == 'q' or product_index == '') and len(order_basket.keys()) > 0: 
+                finished_selecting = True
+                return order_basket
+            elif (product_index == 'q' or product_index == '') and len(order_basket.keys()) == 0:
+                print('You need to have at least 1 item in your order')
+                continue 
+            
+            # if key exists then add quantity. If it doesn't create key and add
+            if order_basket.get(products[product_index].id):
+                order_basket[products[product_index].id] += quantity
+            else:
+                order_basket[products[product_index].id] = quantity
+            
+            print(f'This is the product ID: {products[product_index].id}')
+            print(f'order basket: {order_basket}')
+            # order_basket.extend(repeat(products[product_index].id, quantity))
+            
+            
+            # try:
+            #     product_index = int(product_index)
+            #     quantity = int(input('How many would you like? '))
+            #     if product_index >= 0 and product_index <= num_of_products - 1:
+            #         order_basket.extend(repeat(products[product_index]['id'], quantity))
+            #     else:
+            #         print('You need to enter a correct product option and entries must be numbers')
+                    
+            # except Exception as e:
+            #     print(f'Please enter a valid value the error is {e}')

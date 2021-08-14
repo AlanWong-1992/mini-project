@@ -67,7 +67,7 @@ while run_menu:
         
         # add a new product to products
         elif (sub_menu_choice == 1):
-            product = Product.create_product_user()
+            product = Product.create_product_user(create_id)
             list_helper.add_item(product, products)
 
         # retrieve the current product list
@@ -93,7 +93,7 @@ while run_menu:
         
         # add a new courier to couriers
         elif (sub_menu_choice == 1):
-            courier = Courier.create_courier_user()
+            courier = Courier.create_courier_user(create_id)
             list_helper.add_item(courier, couriers)
 
         # retrieve the current courier list
@@ -119,7 +119,7 @@ while run_menu:
         
         # add a new order to orders
         elif (sub_menu_choice == 1):
-            order = Order.create_order_user(create_id, couriers, list_helper)
+            order = Order.create_order_user(create_id, couriers, products, list_helper)
             list_helper.add_item(order, orders)
 
         # retrieve the current order list

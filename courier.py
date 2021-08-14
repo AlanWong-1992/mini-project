@@ -1,6 +1,6 @@
-from item import Item
+from create_id import create_id
 
-class Courier(Item):
+class Courier():
     
     def __init__(self, id, first_name, last_name, phone_number, email):
         self.id = id
@@ -14,12 +14,12 @@ class Courier(Item):
 
     # used to instantiate an object from user input
     @classmethod
-    def create_courier_user(self):
+    def create_courier_user(self, create_id):
         correct_input = False
         
         while correct_input == False:
             try:
-                id = None
+                id = create_id()
                 first_name = input('What is the first name? ')
                 last_name = input('What is the last name? ')
                 phone_number = input('What is the phone number? ')
