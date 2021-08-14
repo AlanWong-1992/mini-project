@@ -40,7 +40,7 @@ class ListHelper:
         print(f'Here is the updated list:')
         self.show_items(items)
         
-    def update_item(self, items: List[Union[Customer, Product, Courier]]):
+    def update_item(self, name: str, items: List[Union[Customer, Product, Courier]]):
         # loop to choose an order to change
         change_order = True
         while change_order:
@@ -60,37 +60,26 @@ class ListHelper:
             
             if (selected_field) == False: break
             
-            self._update_item_field(selected_field, selected_item)
+            if name == 'products':
+                self._update_product(selected_field, selected_item)
+            else:
+                print('You are leaving the update menu')
 
     def _item_to_change(self, num_orders: int) -> int:
         input_msg = 'Choose the index of the item you want to change or "q" to return to main menu: '
         index = -1
-        index = self._input_num_handler(input_msg, index, 1, num_orders)
+        index = self._input_num_handler(input_msg, index, 1, num_orders, allow_exit=True)
     
         if index == 'q': 
             return 'q'
         elif index >=1 and index <= num_orders: 
             return index - 1
-        
-            # try:
-            #     index = int(index)
-            #     if(index >= 1 and index <= num_orders):
-            #         correct_input = True
-            #         # reduce by 1 as arrays are indexed from 0
-            #         return index - 1 
-            #     else:
-            #         print('You need to enter a valid number')
-            # except ValueError as ve:
-            #     print('You need to enter a correct value')
                 
     def _select_field_to_change(self, item) -> str:
         correct_input = False
         while correct_input == False:
             field_options_message = ''
-            # num_options = len(item) - 1
             num_options = vars(item)
-            print(f'Number of options: {num_options} and the length is {len(num_options)}')
-            # correct_input = True
             field_options = []
             
             for count, key in enumerate(num_options, 0):
@@ -103,8 +92,13 @@ class ListHelper:
                 if count == 0: continue 
                 
                 field_options_message += f'{count} - {key}\n'
-                
-            index = input(f'What would you like to update?\n{field_options_message}')
+            
+            input_msg = f'What would you like to update?\n{field_options_message}'
+            index = -1
+            num_options = len(field_options)
+            index = self._input_num_handler(input_msg, index, 1, num_options)
+            print(f'the index is {index} and the field option of that index is {field_options[index][1]}')
+            return field_options[index][1]
 
             try:
                 index = int(index)
@@ -118,16 +112,18 @@ class ListHelper:
                 print('You need to enter a valid number')
 
     def _update_product(self, product_field: str, product: Product):
-        new_value = input(f'Please enter the new {item_field}: ')
-        item.item_field(new_value)  
+        input_msg = f'Please enter the new {product_field}: '
         
-        if product_field == 'name':
-            pass
-        elif product_field == 'price':
-            pass
-        elif product_field == 'quantity':
-            pass
-        
+        if product_field == '_name':
+            new_value = input(input_msg)
+            product.name = new_value
+        elif product_field == '_price':
+            new_value = self._is_num(input_msg, 'float')
+            product.price = new_value
+        elif product_field == '_quantity':
+            new_value = self._is_num(input_msg, 'int')
+            product.quantity = new_value
+            
     def _update_item_field(self, item_field: str, item: Union[Customer, Product, Courier]):
         #if-else block just for updating orders
         # if (name == 'order' and item_key == 'courier'):
@@ -146,17 +142,34 @@ class ListHelper:
         new_value = input(f'Please enter the new {item_field}: ')
         item.item_field(new_value)
     
-    def _input_num_handler(self, input_msg: str, index: int, range_low: int, range_high: int) -> int:
+    def _is_num(self, input_msg: str, type: str) -> Union[float, int]:
+        correct_input = False
+        while correct_input == False:
+            value = input(input_msg)
+            try:
+                if type == 'float':
+                    value = float(value)
+                elif type == 'int':
+                    value = int(value)
+                    
+                correct_input = True
+                return value
+            except ValueError as ve:
+                print('You need to enter a number')
+            
+    def _input_num_handler(self, input_msg: str, index: int, range_low: int, range_high: int, allow_exit=False) -> int:
         
         while index < range_low or index > range_high:
             index = input(input_msg)
-            try:
-                # check to see if 'q' or empty to return to main menu or leave value as is depending on the function
+            
+            # check to see if 'q' or empty to return to main menu or leave value as is depending on the function
+            if allow_exit:
                 if index == 'q':
                     return 'q'
-                elif index.strip() == '':
+                elif index == '':
                     return ''
-                
+            
+            try:
                 # check to see if the right number as been entered by the user
                 index = int(index)
                 if(index >= range_low and index <= range_high):
