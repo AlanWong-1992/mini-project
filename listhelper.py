@@ -28,17 +28,13 @@ class ListHelper:
         self.show_items(items)
         num_items = len(items)
         index = -1
+        input_msg = 'Choose the index of the item you want to delete (Must be a valid index number)\nEnter "q" or leave blank to exit: '
         
-        while index < 1 or index > len(items):
-            index = int(input('Choose the index of the item you want to delete (Must be a valid index number): '))
-            index = self._input_num_handler(index, 1, num_items)
-            # try: 
-            #     index = int(input('Choose the index of the item you want to delete (Must be a valid index number): '))
-            # except ValueError:
-            #     print('You need to enter a valid number')
-            # except Exception as e:
-            #     print(f'You have an error: {str(e)}')
-    
+        index = self._input_num_handler(input_msg, index, 1, num_items)
+        
+        if (index == 'q' or index == ''):
+            return
+        
         items.pop(index - 1) # reduce by 1 to account for 0 index for lists
         
         print(f'Here is the updated list:')
@@ -67,22 +63,25 @@ class ListHelper:
             self._update_item_field(selected_field, selected_item)
 
     def _item_to_change(self, num_orders: int) -> int:
-        correct_input = False
-        while correct_input == False:
-            index = input('Choose the index of the item you want to change or "q" to return to main menu: ')
+        input_msg = 'Choose the index of the item you want to change or "q" to return to main menu: '
+        index = -1
+        index = self._input_num_handler(input_msg, index, 1, num_orders)
+    
+        if index == 'q': 
+            return 'q'
+        elif index >=1 and index <= num_orders: 
+            return index - 1
         
-            if(index == 'q'): return 'q'
-            
-            try:
-                index = int(index)
-                if(index >= 1 and index <= num_orders):
-                    correct_input = True
-                    # reduce by 1 as arrays are indexed from 0
-                    return index - 1 
-                else:
-                    print('You need to enter a valid number')
-            except ValueError as ve:
-                print('You need to enter a correct value')
+            # try:
+            #     index = int(index)
+            #     if(index >= 1 and index <= num_orders):
+            #         correct_input = True
+            #         # reduce by 1 as arrays are indexed from 0
+            #         return index - 1 
+            #     else:
+            #         print('You need to enter a valid number')
+            # except ValueError as ve:
+            #     print('You need to enter a correct value')
                 
     def _select_field_to_change(self, item) -> str:
         correct_input = False
@@ -147,12 +146,25 @@ class ListHelper:
         new_value = input(f'Please enter the new {item_field}: ')
         item.item_field(new_value)
     
-    def _input_num_handler(self, index: int, range_low: int, range_high: int) -> int:
-        try:
-            index = int(index)
-            if(index >= range_low and index <= range_high):
-                return index
-            else:
-                print(f'You need to enter a number from {range_low} - {range_high}')
-        except ValueError as ve:
-            print('You need to enter a valid number')
+    def _input_num_handler(self, input_msg: str, index: int, range_low: int, range_high: int) -> int:
+        
+        while index < range_low or index > range_high:
+            index = input(input_msg)
+            try:
+                # check to see if 'q' or empty to return to main menu or leave value as is depending on the function
+                if index == 'q':
+                    return 'q'
+                elif index.strip() == '':
+                    return ''
+                
+                # check to see if the right number as been entered by the user
+                index = int(index)
+                if(index >= range_low and index <= range_high):
+                    return index
+                else:
+                    print(f'You need to enter a number from {range_low} - {range_high}')
+            except ValueError as ve:
+                print('You need to enter a valid number')
+                
+                # need to set index as -1 otherwise while loop will break if a non int was entered
+                index = -1 
