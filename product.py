@@ -8,6 +8,9 @@ class Product(Item):
         self.price = price
         self.quantity = quantity
     
+    def __repr__(self):
+        return f'id: {self.id} | name: {self.name} | price: {self.price} | quantity: {self.quantity}'
+        
     # used to instantiate an object from user input
     @classmethod
     def create_product_user(self):

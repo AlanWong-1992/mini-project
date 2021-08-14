@@ -42,8 +42,8 @@ class ListHelper:
         
     def update_item(self, name: str, items: List[Union[Customer, Product, Courier]]):
         # loop to choose an order to change
-        change_order = True
-        while change_order:
+        correct_input = False
+        while correct_input == False:
             num_of_items = len(items)
             
             # show user the list of items that they can update
@@ -62,8 +62,10 @@ class ListHelper:
             
             if name == 'products':
                 self._update_product(selected_field, selected_item)
+                correct_input = True
             else:
                 print('You are leaving the update menu')
+                correct_input = True
 
     def _item_to_change(self, num_orders: int) -> int:
         input_msg = 'Choose the index of the item you want to change or "q" to return to main menu: '
@@ -99,17 +101,6 @@ class ListHelper:
             index = self._input_num_handler(input_msg, index, 1, num_options)
             print(f'the index is {index} and the field option of that index is {field_options[index][1]}')
             return field_options[index][1]
-
-            try:
-                index = int(index)
-                if(index >= 1 and index <= len(num_options)):
-                    correct_input = True
-                    print(field_options[index][1])
-                    return field_options[index][1]
-                else:
-                    print(f'You need to enter a number from 1 - {num_options}')
-            except ValueError as ve:
-                print('You need to enter a valid number')
 
     def _update_product(self, product_field: str, product: Product):
         input_msg = f'Please enter the new {product_field}: '
