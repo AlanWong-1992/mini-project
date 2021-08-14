@@ -130,6 +130,7 @@ def read_from_file(name: str, filepath: str):
     except Exception as e:
         print(f'There was an error {e}. Returning an empty list')
         return []
+    
 def create_product_id():
     return shortuuid.uuid()[:7]
 

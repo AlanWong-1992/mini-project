@@ -17,9 +17,6 @@ class ListHelper:
         print('Here is your new up-to-date list: ')
         self.show_items(items)
         
-    def update_item(self, item: Union[Customer, Product, Courier], items: List[Union[Customer, Product, Courier]]):
-        pass
-    
     def show_items(self, items: List[Union[Customer, Product, Courier]]):
         for index, item in enumerate(items, 1):
             print(f'[{index}] - {item}')
@@ -202,3 +199,30 @@ class ListHelper:
                 
                 # need to set index as -1 otherwise while loop will break if a non int was entered
                 index = -1 
+    
+    def choose_courier(self, couriers: List[Courier]) -> str:
+        num_of_couriers = len(couriers)
+        
+        if num_of_couriers < 1: 
+            print('You need to employ more couriers!')
+            return
+        
+        self.show_items(couriers)
+        
+        input_msg = 'Please choose a courier: '
+        index = -1
+        index = self._input_num_handler(input_msg, index, 1, num_of_couriers) - 1
+        # print(f'index is {index}\nThe courier is {couriers[index]}\nThe first name is {couriers[index].first_name}')
+        return couriers[index].id
+        # try:
+        #     index = int(index)
+        #     if index >=0 and index <= len(couriers) - 1:
+        #         correct_index = True
+        #         print(f'your index is {index}') #and the couriers[{index}] is: {couriers[index]} and the id value is: {couriers[index]["id"]}')
+        #         print(f'couriers item: {couriers[index]}')
+        #         print(f'couriers id: {couriers[index].get("id")}')
+        #         return couriers[index]['id']
+        #     else:
+        #         print('Please enter a valid index from the options above')
+        # except Exception as e:
+        #     print(f'Please enter a valid value the error is {e}')
