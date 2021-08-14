@@ -56,24 +56,34 @@ class ListHelper:
             
             selected_item = items[item_index]
             
-            selected_field = self._select_field_to_change(selected_item)
-            
-            if (selected_field) == False: break
-            
-            if name == 'products':
-                self._update_product(selected_field, selected_item)
-                correct_input = True
-            else:
-                print('You are leaving the update menu')
-                correct_input = True
+            # item to update has been selected, keep looping to change other fields for this item
+            finished_updating = False
+            while finished_updating == False:
+                selected_field = self._select_field_to_change(selected_item)
+                
+                if (selected_field == 'q' or selected_field == ''):
+                    finished_updating == True
+                    correct_input == True
+                    break
+                
+                if name == 'products':
+                    self._update_product(selected_field, selected_item)
+                    print(f'The updated info is: {selected_item}')
+                elif name == 'couriers':
+                    self._update_courier(selected_field, selected_item)
+                    print(f'The updated info is: {selected_item}')
+                else:
+                    print('You are leaving the update menu')
+                    correct_input = True
 
     def _item_to_change(self, num_orders: int) -> int:
         input_msg = 'Choose the index of the item you want to change or "q" to return to main menu: '
         index = -1
         index = self._input_num_handler(input_msg, index, 1, num_orders, allow_exit=True)
     
-        if index == 'q': 
+        if index == 'q' or index == '': 
             return 'q'
+        
         elif index >=1 and index <= num_orders: 
             return index - 1
                 
@@ -95,10 +105,14 @@ class ListHelper:
                 
                 field_options_message += f'{count} - {key}\n'
             
-            input_msg = f'What would you like to update?\n{field_options_message}'
+            input_msg = f'What would you like to update?\n{field_options_message}Choose an option or enter "q" or leave blank to exit: '
             index = -1
             num_options = len(field_options)
-            index = self._input_num_handler(input_msg, index, 1, num_options)
+            index = self._input_num_handler(input_msg, index, 1, num_options, allow_exit=True)
+            
+            if index == 'q' or index == '':
+                return index
+            
             print(f'the index is {index} and the field option of that index is {field_options[index][1]}')
             return field_options[index][1]
 
@@ -114,6 +128,22 @@ class ListHelper:
         elif product_field == '_quantity':
             new_value = self._is_num(input_msg, 'int')
             product.quantity = new_value
+    
+    def _update_courier(self, courier_field: str, courier: Courier):
+        input_msg = f'Please enter the new {courier_field}: '
+        
+        if courier_field == '_first_name':
+            new_value = input(input_msg)
+            courier.first_name = new_value
+        elif courier_field == '_last_name':
+            new_value = input(input_msg)
+            courier.last_name = new_value
+        elif courier_field == '_phone_number':
+            new_value = input(input_msg)
+            courier.phone_number = new_value
+        elif courier_field == '_email':
+            new_value = input(input_msg)
+            courier.email = new_value
             
     def _update_item_field(self, item_field: str, item: Union[Customer, Product, Courier]):
         #if-else block just for updating orders
