@@ -183,7 +183,7 @@ def show_orders_by_status(orders: List[Dict]):
 
 def show_orders_by_courier(orders: List[Dict], couriers: List[Dict]):
     orders_by_courier = []
-    courier_index = choose_courier(couriers)
+    courier_index = choose_courier(couriers).id
     
     for order in orders:
         if(courier_index) == order['courier']:

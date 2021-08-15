@@ -116,10 +116,13 @@ while run_menu:
         
         # add a new order to orders
         elif (sub_menu_choice == 1):
+            # arguments for the Order object
             order_id = create_id()
             customer = Customer.create_customer_user(create_id)
-            courier_id = list_helper.choose_courier(couriers)
+            courier_id = list_helper.choose_item(couriers)
             products = list_helper.choose_products(products)
+            
+            # creating the order and appending the order and customer objs to their lists
             order = Order(order_id, customer.id, customer.phone_number, customer.email, courier_id, products)
             list_helper.add_item(customer, customers)
             list_helper.add_item(order, orders)

@@ -72,9 +72,9 @@ class ListHelper:
                 elif name == 'couriers':
                     self._update_courier(selected_field, selected_item)
                     print(f'The updated info is: {selected_item}')
-                elif name == 'orders':
-                    self._update_order(selected_field, selected_item)
-                    print(f'The updated info is: {selected_item}')
+                # elif name == 'orders':
+                #     self._update_order(selected_field, selected_item)
+                #     print(f'The updated info is: {selected_item}')
                 else:
                     print('You are leaving the update menu')
                     correct_input = True
@@ -148,39 +148,24 @@ class ListHelper:
             new_value = input(input_msg)
             courier.email = new_value
     
-    def _update_order(self, order_field: str, order: Order):
+    def _update_order(self, order_field: str, order: Order, products: List[Product], customers: List[Customer], couriers: List[Courier]):
         input_msg = f'Please enter the new {order_field}: '
         
-        if order_field == '_first_name':
+        if order_field == '_customer_id':
             new_value = input(input_msg)
-            order.first_name = new_value
-        elif order_field == '_last_name':
+            order.customer_id = self.choose_item(customers).id
+        elif order_field == '_customer_phone_number':
             new_value = input(input_msg)
-            order.last_name = new_value
-        elif order_field == '_phone_number':
+            order.customer_phone_number = self.choose_item(customers).phone_number
+        elif order_field == '_customer_email':
             new_value = input(input_msg)
-            order.phone_number = new_value
-        elif order_field == '_email':
+            order.email = self.choose_item(customers).email
+        elif order_field == '_courier_id':
             new_value = input(input_msg)
-            order.email = new_value
-    
-    def _update_item_field(self, item_field: str, item: Union[Customer, Product, Courier]):
-        #if-else block just for updating orders
-        # if (name == 'order' and item_key == 'courier'):
-        #     courier_id = choose_courier(couriers)
-        #     item[item_key] = courier_id
-        #     return
-        # elif (name == 'order' and item_key == 'products'):
-        #     order_basket = choose_products(products)
-        #     item[item_key] = order_basket
-        #     return
-        # elif (name == 'order' and item_key == 'status'):
-        #     status = choose_status()
-        #     item[item_key] = status
-        #     return
-        
-        new_value = input(f'Please enter the new {item_field}: ')
-        item.item_field(new_value)
+            order.courier_id = self.choose_item(couriers).id
+        elif order_field == '_products':
+            new_value = input(input_msg)
+            order.courier_id = self.choose_products(products).id
     
     def _is_num(self, input_msg: str, type: str) -> Union[float, int]:
         '''
@@ -229,23 +214,41 @@ class ListHelper:
                 # need to set index as -1 otherwise while loop will break if a non int was entered
                 index = -1 
     
-    def choose_courier(self, couriers: List[Courier]) -> str:
+    def choose_item(self, items: List[Union[Courier, Customer, Order]]) -> Union[Courier, Customer, Order]:
         '''
-        Allows for user to select a courier based on their ID
+        Allows for user to select a item based
         '''
-        num_of_couriers = len(couriers)
+        num_of_items = len(items)
         
-        if num_of_couriers < 1: 
-            print('You need to employ more couriers!')
+        if num_of_items < 1: 
+            print('You need to employ more items!')
             return
         
-        self.show_items(couriers)
+        self.show_items(items)
         
-        input_msg = 'Please choose a courier: '
+        input_msg = 'Please choose a item: '
         index = -1
-        index = self._input_num_handler(input_msg, index, 1, num_of_couriers) - 1
+        index = self._input_num_handler(input_msg, index, 1, num_of_items) - 1
 
-        return couriers[index].id
+        return items[index]
+    
+    def choose_customer(self, customers: List[Customer]) -> str:
+        '''
+        Allows for user to select a customer
+        '''
+        num_of_customers = len(customers)
+        
+        if num_of_customers < 1: 
+            print('You need to add more customers!')
+            return
+        
+        self.show_items(customers)
+        
+        input_msg = 'Please choose a customer: '
+        index = -1
+        index = self._input_num_handler(input_msg, index, 1, num_of_customers) - 1
+
+        return customers[index]
         
     def choose_products(self, products: List[Product]) -> Dict[str, int]:
         '''
