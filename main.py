@@ -75,7 +75,7 @@ while run_menu:
             
         # update a product chosen from the product list
         elif (sub_menu_choice == 3):
-            list_helper.update_item('products', products)
+            list_helper.update_item('products')
             
         # deleting a product from the product list
         elif (sub_menu_choice == 4):

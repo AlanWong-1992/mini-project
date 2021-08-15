@@ -46,14 +46,15 @@ class ListHelper:
         print(f'Here is the updated list:')
         self.show_items(name)
         
-    def update_item(self, name: str, items: List[Union[Customer, Product, Courier]]):
+    def update_item(self, name: str):
+        items = self._list_selecter(name)
         # loop to choose an order to change
         correct_input = False
         while correct_input == False:
             num_of_items = len(items)
             
             # show user the list of items that they can update
-            self.show_items(items)
+            self.show_items(name)
             
             # user chooses the index of the item they want to change
             item_index = self._item_to_change(num_of_items)
@@ -154,24 +155,24 @@ class ListHelper:
             new_value = input(input_msg)
             courier.email = new_value
     
-    def _update_order(self, order_field: str, order: Order, products: List[Product], customers: List[Customer], couriers: List[Courier]):
+    def _update_order(self, order_field: str, order: Order):
         input_msg = f'Please enter the new {order_field}: '
         
         if order_field == '_customer_id':
             new_value = input(input_msg)
-            order.customer_id = self.choose_item(customers).id
+            order.customer_id = self.choose_item(self.customers).id
         elif order_field == '_customer_phone_number':
             new_value = input(input_msg)
-            order.customer_phone_number = self.choose_item(customers).phone_number
+            order.customer_phone_number = self.choose_item(self.customers).phone_number
         elif order_field == '_customer_email':
             new_value = input(input_msg)
-            order.email = self.choose_item(customers).email
+            order.email = self.choose_item(self.customers).email
         elif order_field == '_courier_id':
             new_value = input(input_msg)
-            order.courier_id = self.choose_item(couriers).id
+            order.courier_id = self.choose_item(self.couriers).id
         elif order_field == '_products':
             new_value = input(input_msg)
-            order.courier_id = self.choose_products(products).id
+            order.courier_id = self.choose_products(self.products).id
     
     def _is_num(self, input_msg: str, type: str) -> Union[float, int]:
         '''
@@ -220,7 +221,7 @@ class ListHelper:
                 # need to set index as -1 otherwise while loop will break if a non int was entered
                 index = -1 
     
-    def _list_selecter(self, name: str):
+    def _list_selecter(self, name: str) -> List[Union[Product, Courier, Order, Customer]]:
         if name == 'products':
             return self.products
         elif name == 'couriers':
@@ -240,7 +241,7 @@ class ListHelper:
             print('You need to employ more items!')
             return
         
-        self.show_items(items)
+        self.show_items(name)
         
         input_msg = 'Please choose a item: '
         index = -1
