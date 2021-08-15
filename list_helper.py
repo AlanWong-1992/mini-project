@@ -8,24 +8,30 @@ from itertools import repeat
 
 class ListHelper:
     
-    # def __init__(self, products, couriers, orders, customers):
-    #     self.products = products
-    #     self.couriers = couriers
-    #     self.orders = orders
-    #     self.customers = customers
-
-    def add_item(self, item: Union[Customer, Product, Courier], items: List[Union[Customer, Product, Courier]]):
+    def __init__(self, products, couriers, orders, customers):
+        self.products = products
+        self.couriers = couriers
+        self.orders = orders
+        self.customers = customers
+    
+    def add_item(self, name: str, item: Union[Customer, Product, Courier, Customer]):
+        items = self._list_selecter(name)
         items.append(item)
+        print(f'Here is your new up-to-date list of {name}: ')
+        print(items)
+        self.show_items(name)
         
-        print(f'Here is your new up-to-date list of {type(item)}s: ')
-        self.show_items(items)
-        
-    def show_items(self, items: List[Union[Customer, Product, Courier]]):
+    def show_items(self, name: str):
+        items = self._list_selecter(name)
         for index, item in enumerate(items, 1):
             print(f'[{index}] - {item}')
     
-    def delete_item(self, items: List[Union[Customer, Product, Courier]]):
-        self.show_items(items)
+    def delete_item(self, name: str):
+        # select the list and print out the items
+        items = self._list_selecter(name)
+        self.show_items(name)
+        
+        # set variables for the _input_num_handler func
         num_items = len(items)
         index = -1
         input_msg = 'Choose the index of the item you want to delete (Must be a valid index number)\nEnter "q" or leave blank to exit: '
@@ -38,7 +44,7 @@ class ListHelper:
         items.pop(index - 1) # reduce by 1 to account for 0 index for lists
         
         print(f'Here is the updated list:')
-        self.show_items(items)
+        self.show_items(name)
         
     def update_item(self, name: str, items: List[Union[Customer, Product, Courier]]):
         # loop to choose an order to change
@@ -214,6 +220,16 @@ class ListHelper:
                 # need to set index as -1 otherwise while loop will break if a non int was entered
                 index = -1 
     
+    def _list_selecter(self, name: str):
+        if name == 'products':
+            return self.products
+        elif name == 'couriers':
+            return self.couriers
+        elif name == 'orders':
+            return self.orders
+        elif name == 'customers':
+            return self.customers
+            
     def choose_item(self, items: List[Union[Courier, Customer, Order]]) -> Union[Courier, Customer, Order]:
         '''
         Allows for user to select a item based

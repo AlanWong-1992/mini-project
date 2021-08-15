@@ -19,7 +19,6 @@ database = os.environ.get("mysql_db")
 
 # instantiate DB and List Helper objects
 db_helper = DBHelper(host, user, password, database)
-list_helper = ListHelper()
 
 # populating lists from files
 products_file = './products.csv'
@@ -31,10 +30,13 @@ couriers = menu.read_from_file('couriers', couriers_file)
 orders = menu.read_from_file('orders', orders_file)
 customers = menu.read_from_file('customers', customers_file)
 
+list_helper = ListHelper(products, couriers, orders, customers)
+print(f'self.products: {list_helper.products}')
+
 # print(f'Products is a {type(products)}. Here is a list of your products: {products}')
 # print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
-print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
-print(type(orders[0].products))
+# print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
+# print(type(orders[0].products))
 # print(f'Orders is a {type(customers)} and Here is a list of your customers: {customers}')
 
 run_menu = True
@@ -65,11 +67,11 @@ while run_menu:
         # add a new product to products
         elif (sub_menu_choice == 1):
             product = Product.create_product_user(create_id)
-            list_helper.add_item(product, products)
+            list_helper.add_item('products', product)
 
         # retrieve the current product list
         elif (sub_menu_choice == 2):
-            list_helper.show_items(products)
+            list_helper.show_items('products')
             
         # update a product chosen from the product list
         elif (sub_menu_choice == 3):
@@ -77,7 +79,7 @@ while run_menu:
             
         # deleting a product from the product list
         elif (sub_menu_choice == 4):
-            list_helper.delete_item(products)
+            list_helper.delete_item('products')
     
     # courier options
     elif (main_menu_choice == 2):
