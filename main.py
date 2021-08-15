@@ -93,19 +93,19 @@ while run_menu:
         # add a new courier to couriers
         elif (sub_menu_choice == 1):
             courier = Courier.create_courier_user(create_id)
-            list_helper.add_item(courier, couriers)
+            list_helper.add_item('couriers', courier)
 
         # retrieve the current courier list
         elif (sub_menu_choice == 2):
-            list_helper.show_items(couriers)
+            list_helper.show_items('couriers')
             
         # update a courier chosen from the courier list
         elif (sub_menu_choice == 3):
-            list_helper.update_item('couriers', couriers)
+            list_helper.update_item('couriers')
             
         # deleting a courier from the courier list
         elif (sub_menu_choice == 4):
-            list_helper.delete_item(couriers)
+            list_helper.delete_item('couriers')
             
     # order options
     elif (main_menu_choice == 3):

@@ -16,9 +16,9 @@ class ListHelper:
     
     def add_item(self, name: str, item: Union[Customer, Product, Courier, Customer]):
         items = self._list_selecter(name)
+        print(f'items is {items}')
         items.append(item)
         print(f'Here is your new up-to-date list of {name}: ')
-        print(items)
         self.show_items(name)
         
     def show_items(self, name: str):
