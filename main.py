@@ -25,9 +25,11 @@ list_helper = ListHelper()
 products_file = './products.csv'
 couriers_file = './couriers.csv'
 orders_file = './orders.csv'
+customers_file = './customers.csv'
 products = menu.read_from_file('products', products_file)
 couriers = menu.read_from_file('couriers', couriers_file)
 orders = menu.read_from_file('orders', orders_file)
+customers = menu.read_from_file('customers', customers_file)
 
 # print(f'Products is a {type(products)}. Here is a list of your products: {products}')
 # print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
@@ -47,6 +49,7 @@ while run_menu:
         menu.write_to_file(products_file, products)
         menu.write_to_file(couriers_file, couriers)
         menu.write_to_file(orders_file, orders)
+        menu.write_to_file(customers_file, customers)
         print('\nExiting and saving application! See you next time.')
         run_menu = False
     
@@ -113,8 +116,12 @@ while run_menu:
         
         # add a new order to orders
         elif (sub_menu_choice == 1):
-            order = Order.create_order_user(create_id, couriers, products, list_helper)
-            print(order)
+            order_id = create_id()
+            customer = Customer.create_customer_user(create_id)
+            courier_id = list_helper.choose_courier(couriers)
+            products = list_helper.choose_products(products)
+            order = Order(order_id, customer.id, customer.phone_number, customer.email, courier_id, products)
+            list_helper.add_item(customer, customers)
             list_helper.add_item(order, orders)
 
         # retrieve the current order list

@@ -7,9 +7,7 @@ from db_helper import DBHelper
 from product import Product
 from courier import Courier
 from order import Order
-# from order import Order
 from customer import Customer
-
 
 # main menu, user chooses an option 
 def main_menu_choice():

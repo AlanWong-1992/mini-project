@@ -3,11 +3,11 @@ from courier import Courier
 from customer import Customer
 from product import Product
 from create_id import create_id
-from list_helper import ListHelper
+# from list_helper import ListHelper
 
 class Order():
     
-    def __init__(self, id: str, customer_id: str, customer_phone_number: str, customer_email: str, courier_id: str, products: Dict[str, int]):
+    def __init__(self, id, customer_id: str, customer_phone_number: str, customer_email: str, courier_id: str, products: Dict[str, int]):
         self.id = id
         self.customer_id = customer_id
         self.customer_phone_number = customer_phone_number
@@ -19,19 +19,16 @@ class Order():
         return f'id: {self.id} | customer id: {self.customer_id} | customer phone number: {self.customer_phone_number} | customer email: {self.customer_email} | courier id: {self.courier_id} | products: {self.products}'
 
     # used to instantiate an object from user input
-    @classmethod
-    def create_order_user(self, create_id, couriers: List[Courier], products: List[Product], list_helper: ListHelper):
-        correct_input = False
-        while correct_input == False:
-            try:
-                id = create_id()
-                customer = Customer.create_customer_user(create_id)
-                courier_id = list_helper.choose_courier(couriers)
-                products = list_helper.choose_products(products)
-                return self(id, customer.id, customer.phone_number, customer.email, courier_id, products)
-            except Exception as e:
-                print(f'There was an error {e}')
-                continue
+    # @classmethod
+    # def create_order_user(self, create_id, customer: Customer, courier_id: str, products: Dict[str, int]):
+    #     correct_input = False
+    #     while correct_input == False:
+    #         try:
+    #             id = create_id()
+    #             return self(id, customer.id, customer.phone_number, customer.email, courier_id, products)
+    #         except Exception as e:
+    #             print(f'There was an error {e}')
+    #             continue
     
     # id
     @property

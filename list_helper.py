@@ -3,6 +3,7 @@ from typing import List, Dict, Union
 from customer import Customer
 from product import Product
 from courier import Courier
+from order import Order
 from itertools import repeat
 
 class ListHelper:
@@ -16,7 +17,7 @@ class ListHelper:
     def add_item(self, item: Union[Customer, Product, Courier], items: List[Union[Customer, Product, Courier]]):
         items.append(item)
         
-        print('Here is your new up-to-date list: ')
+        print(f'Here is your new up-to-date list of {type(item)}s: ')
         self.show_items(items)
         
     def show_items(self, items: List[Union[Customer, Product, Courier]]):
@@ -70,6 +71,9 @@ class ListHelper:
                     print(f'The updated info is: {selected_item}')
                 elif name == 'couriers':
                     self._update_courier(selected_field, selected_item)
+                    print(f'The updated info is: {selected_item}')
+                elif name == 'orders':
+                    self._update_order(selected_field, selected_item)
                     print(f'The updated info is: {selected_item}')
                 else:
                     print('You are leaving the update menu')
@@ -143,7 +147,23 @@ class ListHelper:
         elif courier_field == '_email':
             new_value = input(input_msg)
             courier.email = new_value
-            
+    
+    def _update_order(self, order_field: str, order: Order):
+        input_msg = f'Please enter the new {order_field}: '
+        
+        if order_field == '_first_name':
+            new_value = input(input_msg)
+            order.first_name = new_value
+        elif order_field == '_last_name':
+            new_value = input(input_msg)
+            order.last_name = new_value
+        elif order_field == '_phone_number':
+            new_value = input(input_msg)
+            order.phone_number = new_value
+        elif order_field == '_email':
+            new_value = input(input_msg)
+            order.email = new_value
+    
     def _update_item_field(self, item_field: str, item: Union[Customer, Product, Courier]):
         #if-else block just for updating orders
         # if (name == 'order' and item_key == 'courier'):
@@ -232,6 +252,10 @@ class ListHelper:
         Allows user to select products for their orders. 
         Products are appended to a dictionary
         '''
+        if len(products) == 0:
+            print('Your shop has no products you need to add some')
+            return
+        
         order_basket = {}
 
         finished_selecting = False
