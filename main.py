@@ -121,25 +121,25 @@ while run_menu:
             # arguments for the Order object
             order_id = create_id()
             customer = Customer.create_customer_user(create_id)
-            courier_id = list_helper.choose_item(couriers)
-            products = list_helper.choose_products(products)
+            courier_id = list_helper.choose_item('couriers').id
+            products = list_helper.choose_products()
             
             # creating the order and appending the order and customer objs to their lists
             order = Order(order_id, customer.id, customer.phone_number, customer.email, courier_id, products)
-            list_helper.add_item(customer, customers)
-            list_helper.add_item(order, orders)
+            list_helper.add_item('customers', customer)
+            list_helper.add_item('orders', order)
 
         # retrieve the current order list
         elif (sub_menu_choice == 2):
-            list_helper.show_items(orders)
+            list_helper.show_items('orders')
             
         # update a order chosen from the order list
         elif (sub_menu_choice == 3):
-            list_helper.update_item('orders', orders)
+            list_helper.update_item('orders')
             
         # deleting a order from the order list
         elif (sub_menu_choice == 4):
-            list_helper.delete_item(orders)
+            list_helper.delete_item('orders')
     
     # # order options    
     # elif (main_menu_choice == 3):

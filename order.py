@@ -3,7 +3,6 @@ from courier import Courier
 from customer import Customer
 from product import Product
 from create_id import create_id
-# from list_helper import ListHelper
 
 class Order():
     
