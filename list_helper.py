@@ -271,6 +271,7 @@ class ListHelper:
             # if product index is a number we want to reduce by 1 to index list. Can return "q" or blank as well
             product_index = self._input_num_handler(input_msg, index, 1, num_of_products, allow_exit=True)
             product_index = product_index - 1 if type(product_index) == int else product_index
+            selected_item = 
             
             input_msg = 'How many would you like? Please enter an amount or type in "q" or leave blank again to exit: '
             index = -1
