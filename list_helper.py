@@ -41,21 +41,16 @@ class ListHelper:
         if (index == 'q' or index == ''):
             return
         
+        # need to return the quantity of the products back if deleting an order
         if name == 'orders':
             selected_item = items[index]
-            # print(f'this is the item you want to delete {selected_item}.') 
-            print(f'There are {selected_item.products} in this order')
-            for key, value in selected_item.products.items():
-                # print(f'The key {key} has a value of {value}')
-                for product in self.products:
-                    if product.id == key:
-                        product.quantity += value
+            self._return_products_quantity(selected_item)
+
         
-        print(self.products)
-        # items.pop(index - 1) # reduce by 1 to account for 0 index for lists
+        items.pop(index - 1) # reduce by 1 to account for 0 index for lists
         
-        # print(f'Here is the updated list:')
-        # self.show_items(name)
+        print(f'Here is the updated list:')
+        self.show_items(name)
         
     def update_item(self, name: str):
         items = self._list_selecter(name)
@@ -182,9 +177,21 @@ class ListHelper:
             new_value = self.choose_item('couriers').id
             order.courier_id = new_value
         elif order_field == 'products':
-            new_value = self.choose_products
+            # return products quantity back to respective products
+            self._return_products_quantity(order)
+            # user can enter new products quantity now
+            new_value = self.choose_products()
             order.products = new_value
-            
+    
+    def _return_products_quantity(self, order: Order):
+        '''
+        returns the quantity of each products from an order back to the product in the products list
+        '''
+        for key, value in order.products.items():
+            for product in self.products:
+                if product.id == key:
+                    product.quantity += value
+
     def _input_num_handler(self, input_msg: str, index: int, range_low: int, range_high: int, allow_exit=False) -> int:
         '''
         Makes sure user enters numbers within a predefined range.
