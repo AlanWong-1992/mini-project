@@ -110,7 +110,6 @@ def read_from_file(name: str, filepath: str) -> List[Union[Product, Courier, Ord
                     file_items.append(Order(line[0], line[1], line[2], line[3], line[4], ast.literal_eval(line[5])))
                 elif name == 'customers':
                     file_items.append(Customer(line[0], line[1], line[2], line[3], line[4], line[5]))
-        print(f'file items: {file_items}')
         return file_items
     except FileNotFoundError as fnfe:
         print(f'Your file was not found')

@@ -1,9 +1,10 @@
 from math import prod
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Callable
 from customer import Customer
 from product import Product
 from courier import Courier
 from order import Order
+from is_num import is_num
 
 class ListHelper:
     
@@ -125,17 +126,17 @@ class ListHelper:
             print(f'the index is {index} and the field option of that index is {field_options[index][1]}')
             return field_options[index][1]
 
-    def _update_product(self, product_field: str, product: Product):
+    def _update_product(self, product_field: str, product: Product, is_num: Callable):
         input_msg = f'Please enter the new {product_field}: '
         
         if product_field == '_name':
             new_value = input(input_msg)
             product.name = new_value
         elif product_field == '_price':
-            new_value = self._is_num(input_msg, 'float')
+            new_value = is_num(input_msg, 'float')
             product.price = new_value
         elif product_field == '_quantity':
-            new_value = self._is_num(input_msg, 'int')
+            new_value = is_num(input_msg, 'int')
             product.quantity = new_value
     
     def _update_courier(self, courier_field: str, courier: Courier):
@@ -172,25 +173,6 @@ class ListHelper:
         elif order_field == 'products':
             new_value = self.choose_products
             order.products = new_value
-    
-    def _is_num(self, input_msg: str, type: str) -> Union[float, int]:
-        '''
-        Checks if the input is a float or an int
-        Used for when adding a product 
-        '''
-        correct_input = False
-        while correct_input == False:
-            value = input(input_msg)
-            try:
-                if type == 'float':
-                    value = float(value)
-                elif type == 'int':
-                    value = int(value)
-                    
-                correct_input = True
-                return value
-            except ValueError as ve:
-                print('You need to enter a number')
             
     def _input_num_handler(self, input_msg: str, index: int, range_low: int, range_high: int, allow_exit=False) -> int:
         '''
@@ -272,11 +254,11 @@ class ListHelper:
             product_index = self._input_num_handler(input_msg, index, 1, num_of_products, allow_exit=True)
             product_index = product_index - 1 if type(product_index) == int else product_index
             selected_product = self.products[product_index]
-            selected_product_stock = len(selected_product)
+            selected_product_quantity = selected_product.quantity
 
             input_msg = 'How many would you like? Please enter an amount or type in "q" or leave blank again to exit: '
             index = -1
-            quantity = self._input_num_handler(input_msg, index, 1, selected_product_stock, allow_exit=True) #range high set at an arbitary high number
+            quantity = self._input_num_handler(input_msg, index, 1, selected_product_quantity, allow_exit=True) #range high set at an arbitary high number
             
             if (product_index == 'q' or product_index == '') and (len(order_basket.keys()) > 0):
                 finished_selecting = True

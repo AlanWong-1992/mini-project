@@ -1,4 +1,7 @@
 from create_id import create_id
+from is_num import is_num
+from typing import Callable
+
 class Product():
     
     def __init__(self, id, name, price, quantity):
@@ -12,15 +15,15 @@ class Product():
         
     # used to instantiate an object from user input
     @classmethod
-    def create_product_user(self, create_id):
+    def create_product_user(self, create_id: str):
         correct_input = False
         
         while correct_input == False:
             try:
                 id = create_id()
                 name = input('What is the name of the product? ')
-                price = input('How much does it cost? ')
-                quantity = input('How many do we have in stock? ')
+                price = is_num('How much does it cost? ', 'float')
+                quantity = is_num('How many do we have in stock? ', 'int')
                 return self(id, name, price, quantity)
             
             except Exception as e:
