@@ -118,13 +118,21 @@ while run_menu:
 
             # set courier_id to courier if the return value exists. Otherwise set to 0.
             courier = list_helper.choose_item('couriers')
-            courier_id = courier.id if courier else 0
 
-            # choosing the products
-            products = list_helper.choose_products()
+            if courier:
+                courier_id = courier.id
+            else:
+                print('You need to add some couriers before adding an order')
             
+            # choosing the products
+            basket = list_helper.choose_products()
+            
+            if basket == None:
+                print('Your shop has no basket to sell. Please add some before adding any orders')
+                continue
+
             # creating the order and appending the order and customer objs to their lists
-            order = Order(order_id, customer.id, customer.phone_number, customer.email, courier_id, products)
+            order = Order(order_id, customer.id, customer.phone_number, customer.email, courier_id, basket)
             list_helper.add_item('customers', customer)
             list_helper.add_item('orders', order)
 

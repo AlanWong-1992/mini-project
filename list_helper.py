@@ -36,15 +36,26 @@ class ListHelper:
         index = -1
         input_msg = 'Choose the index of the item you want to delete (Must be a valid index number)\nEnter "q" or leave blank to exit: '
         
-        index = self._input_num_handler(input_msg, index, 1, num_items)
+        index = self._input_num_handler(input_msg, index, 1, num_items, allow_exit=True) - 1
         
         if (index == 'q' or index == ''):
             return
         
-        items.pop(index - 1) # reduce by 1 to account for 0 index for lists
+        if name == 'orders':
+            selected_item = items[index]
+            # print(f'this is the item you want to delete {selected_item}.') 
+            print(f'There are {selected_item.products} in this order')
+            for key, value in selected_item.products.items():
+                # print(f'The key {key} has a value of {value}')
+                for product in self.products:
+                    if product.id == key:
+                        product.quantity += value
         
-        print(f'Here is the updated list:')
-        self.show_items(name)
+        print(self.products)
+        # items.pop(index - 1) # reduce by 1 to account for 0 index for lists
+        
+        # print(f'Here is the updated list:')
+        # self.show_items(name)
         
     def update_item(self, name: str):
         items = self._list_selecter(name)
