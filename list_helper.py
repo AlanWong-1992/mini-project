@@ -271,11 +271,12 @@ class ListHelper:
             # if product index is a number we want to reduce by 1 to index list. Can return "q" or blank as well
             product_index = self._input_num_handler(input_msg, index, 1, num_of_products, allow_exit=True)
             product_index = product_index - 1 if type(product_index) == int else product_index
-            selected_item = 
-            
+            selected_product = self.products[product_index]
+            selected_product_stock = len(selected_product)
+
             input_msg = 'How many would you like? Please enter an amount or type in "q" or leave blank again to exit: '
             index = -1
-            quantity = self._input_num_handler(input_msg, index, 1, 999, allow_exit=True) #range high set at an arbitary high number
+            quantity = self._input_num_handler(input_msg, index, 1, selected_product_stock, allow_exit=True) #range high set at an arbitary high number
             
             if (product_index == 'q' or product_index == '') and (len(order_basket.keys()) > 0):
                 finished_selecting = True
@@ -285,10 +286,12 @@ class ListHelper:
                 continue 
             
             # if key exists then add quantity. If it doesn't create key and set to quantity
-            if order_basket.get(self.products[product_index].id):
-                order_basket[self.products[product_index].id] += quantity
+            if order_basket.get(selected_product.id):
+                order_basket[selected_product.id] += quantity
+                selected_product.quantity -= quantity
             else:
-                order_basket[self.products[product_index].id] = quantity
+                order_basket[selected_product.id] = quantity
+                selected_product.quantity -= quantity
                 
     def _update_quantity(item: Product, amount):
         '''

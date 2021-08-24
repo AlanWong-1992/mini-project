@@ -4,10 +4,15 @@ test-db/
 # csv files
 *csv
 
-# python environment
+# environment
 .env
 .venv
 
 # directories
 __pycache__
 .pytest_cache
+temp-data
+data
+
+# vscode
+.vscode/

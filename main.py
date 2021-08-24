@@ -21,23 +21,16 @@ database = os.environ.get("mysql_db")
 db_helper = DBHelper(host, user, password, database)
 
 # populating lists from files
-products_file = './products.csv'
-couriers_file = './couriers.csv'
-orders_file = './orders.csv'
-customers_file = './customers.csv'
+products_file = './data/products.csv'
+couriers_file = './data/couriers.csv'
+orders_file = './data/orders.csv'
+customers_file = './data/customers.csv'
 products = menu.read_from_file('products', products_file)
 couriers = menu.read_from_file('couriers', couriers_file)
 orders = menu.read_from_file('orders', orders_file)
 customers = menu.read_from_file('customers', customers_file)
 
 list_helper = ListHelper(products, couriers, orders, customers)
-print(f'self.products: {list_helper.products}')
-
-# print(f'Products is a {type(products)}. Here is a list of your products: {products}')
-# print(f'Couriers is a {type(couriers)} Here is a list of your couriers: {couriers}')
-# print(f'Orders is a {type(orders)} and Here is a list of your orders: {orders}')
-# print(type(orders[0].products))
-# print(f'Orders is a {type(customers)} and Here is a list of your customers: {customers}')
 
 run_menu = True
 
@@ -121,7 +114,12 @@ while run_menu:
             # arguments for the Order object
             order_id = create_id()
             customer = Customer.create_customer_user(create_id)
-            courier_id = list_helper.choose_item('couriers').id
+
+            # set courier_id to courier if the return value exists. Otherwise set to 0.
+            courier = list_helper.choose_item('couriers')
+            courier_id = courier.id if courier else 0
+
+            # choosing the products
             products = list_helper.choose_products()
             
             # creating the order and appending the order and customer objs to their lists
@@ -140,40 +138,5 @@ while run_menu:
         # deleting a order from the order list
         elif (sub_menu_choice == 4):
             list_helper.delete_item('orders')
-    
-    # # order options    
-    # elif (main_menu_choice == 3):
-        
-    #     # user chooses an option
-    #     sub_menu_choice = menu.sub_menu_choice('order')
-                
-    #     # return to the previous menu
-    #     if (sub_menu_choice == 0):
-    #         print('\nReturning to main Menu')
-    #         continue
-        
-    #     # adding a new order to the order list    
-    #     elif (sub_menu_choice == 1):
-    #         menu.add_order(products, couriers, orders, menu.create_order_id)
-    #         print(f'read_from_fileHere are your orders: {orders}')
-            
-    #     # retreiving the current order list
-    #     elif (sub_menu_choice == 2):
-    #         view_order_choice = menu.view_orders_choice()
-            
-    #         if(view_order_choice == 1):
-    #             menu.show_items('order', orders)
-    #         elif(view_order_choice == 2):
-    #             menu.show_orders_by_status(orders)
-    #         elif(view_order_choice == 3):
-    #             menu.show_orders_by_courier(orders, couriers=couriers)
-            
-    #     # updating a order chosen from the order list
-    #     elif (sub_menu_choice == 3):
-    #         print(couriers)
-    #         menu.update_item('order', orders, products=products, couriers=couriers)
-            
-    #     # deleting a order from the order list
-    #     elif (sub_menu_choice == 4):
-    #         menu.remove_item('order', orders)
+
 exit()
