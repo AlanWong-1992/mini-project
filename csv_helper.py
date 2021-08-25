@@ -1,4 +1,5 @@
 import csv
+import ast
 from typing import List, Union
 from product import Product
 from courier import Courier
@@ -13,7 +14,7 @@ class CSVHelper:
         self.orders_file = orders_file
         self.customers_file = customers_file
 
-    def write_to_file(filepath: str, items: List[Union[Product, Courier, Order, Customer]]):
+    def write_to_file(self, filepath: str, items: List[Union[Product, Courier, Order, Customer]]):
         try:
             with open(filepath, 'w', newline='', encoding='utf-8') as file:
                 keys = vars(items[0]).keys()
@@ -26,7 +27,7 @@ class CSVHelper:
                 print(f'There is an error {str(e)}')
 
     # reading files and populate list items            
-    def read_from_file(name: str, filepath: str) -> List[Union[Product, Courier, Order, Customer]]:
+    def read_from_file(self, name: str, filepath: str) -> List[Union[Product, Courier, Order, Customer]]:
         try:
             file_items = []
             with open(filepath, 'r', newline='', encoding='utf-8') as file:
@@ -34,7 +35,6 @@ class CSVHelper:
                 next(reader)
                 for line in reader:
                     if name == 'products':
-                        print(f'line 0 is {line[0]}, line 1 is {line[1]}, line 2 is {line[2]}, line 3 is {line[3]}')
                         file_items.append(Product(line[0], line[1], line[2], line[3]))
                     elif name == 'couriers':
                         file_items.append(Courier(line[0], line[1], line[2], line[3], line[4]))
@@ -43,7 +43,7 @@ class CSVHelper:
                     elif name == 'customers':
                         file_items.append(Customer(line[0], line[1], line[2], line[3], line[4], line[5]))
             return file_items
-        except FileNotFoundError as fnfe:
+        except FileNotFoundError:
             print(f'Your file was not found')
             return []
         except Exception as e:

@@ -27,7 +27,6 @@ class ListHelper:
             print(f'[{index}] - {item}')
     
     def delete_item(self, name: str):
-        # select the list and print out the items
         items = self._list_selecter(name)
         self.show_items(name)
         

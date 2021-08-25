@@ -6,6 +6,7 @@ from product import Product
 from courier import Courier
 from order import Order
 from customer import Customer
+from csv_helper import CSVHelper
 from list_helper import ListHelper
 from is_num import is_num
 from db_helper import DBHelper
@@ -26,10 +27,11 @@ products_file = './data/products.csv'
 couriers_file = './data/couriers.csv'
 orders_file = './data/orders.csv'
 customers_file = './data/customers.csv'
-products = menu.read_from_file('products', products_file)
-couriers = menu.read_from_file('couriers', couriers_file)
-orders = menu.read_from_file('orders', orders_file)
-customers = menu.read_from_file('customers', customers_file)
+csv_helper = CSVHelper(products_file, couriers_file, orders_file, customers_file)
+products = csv_helper.read_from_file('products', csv_helper.products_file)
+couriers = csv_helper.read_from_file('couriers', csv_helper.couriers_file)
+orders = csv_helper.read_from_file('orders', csv_helper.orders_file)
+customers = csv_helper.read_from_file('customers', csv_helper.customers_file)
 
 list_helper = ListHelper(products, couriers, orders, customers)
 
