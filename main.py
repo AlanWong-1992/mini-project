@@ -8,7 +8,6 @@ from order import Order
 from customer import Customer
 from csv_helper import CSVHelper
 from list_helper import ListHelper
-from is_num import is_num
 from db_helper import DBHelper
 from dotenv import load_dotenv
 
@@ -44,10 +43,10 @@ while run_menu:
     
     # exits the application and saves to .txt files    
     if (main_menu_choice == 0):
-        menu.write_to_file(products_file, products)
-        menu.write_to_file(couriers_file, couriers)
-        menu.write_to_file(orders_file, orders)
-        menu.write_to_file(customers_file, customers)
+        csv_helper.write_to_file('products', products)
+        csv_helper.write_to_file('couriers', couriers)
+        csv_helper.write_to_file('orders', orders)
+        csv_helper.write_to_file('customers', customers)
         print('\nExiting and saving application! See you next time.')
         run_menu = False
     

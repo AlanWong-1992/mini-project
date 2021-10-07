@@ -14,14 +14,20 @@ class CSVHelper:
         self.orders_file = orders_file
         self.customers_file = customers_file
 
-    def write_to_file(self, filepath: str, items: List[Union[Product, Courier, Order, Customer]]):
+    def write_to_file(self, name: str, items: List[Union[Product, Courier, Order, Customer]]):
+        filepath = ''
+        
+        if name == 'products': filepath = self.products_file 
+        if name == 'couriers': filepath = self.couriers_file
+        if name == 'orders': filepath = self.orders_file
+        if name == 'customers': filepath = self.customers_file
+
         try:
             with open(filepath, 'w', newline='', encoding='utf-8') as file:
                 keys = vars(items[0]).keys()
                 writer = csv.DictWriter(file, keys)
                 writer.writeheader()
                 for item in items:
-                    print(vars(item))
                     writer.writerow(vars(item))
         except Exception as e:
                 print(f'There is an error {str(e)}')
