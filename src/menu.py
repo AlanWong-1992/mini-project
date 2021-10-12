@@ -9,7 +9,8 @@ from courier import Courier
 from order import Order
 from customer import Customer
 
-# main menu, user chooses an option 
+# main menu, user chooses an option
+
 def main_menu_choice():
     input_is_correct = False
     
