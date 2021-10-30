@@ -1,5 +1,5 @@
 from unittest.mock import patch
-from .. src.menu-2 import Menu
+from .. src.menu import Menu
 
 # class Menu:
 #     def __init__(self):

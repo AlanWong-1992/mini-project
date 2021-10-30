@@ -45,7 +45,6 @@ class ListHelper:
             selected_item = items[index]
             self._return_products_quantity(selected_item)
 
-        
         items.pop(index - 1) # reduce by 1 to account for 0 index for lists
         
         print(f'Here is the updated list:')

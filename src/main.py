@@ -1,5 +1,5 @@
 from create_id import create_id
-import menu
+from menu_2 import Menu
 import pymysql
 import os
 from product import Product
@@ -35,6 +35,8 @@ customers = csv_helper.read_from_file('customers', csv_helper.customers_file)
 list_helper = ListHelper(products, couriers, orders, customers)
 
 run_menu = True
+
+menu = Menu()
 
 while run_menu:
     '''Get user input and decide what options to take'''

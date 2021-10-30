@@ -1,4 +1,3 @@
-import mysql.connector
 import os
 from db_helper import DBHelper
 from dotenv import load_dotenv
@@ -68,71 +67,3 @@ print(database)
 
 conn.no_commit_execute(drop_tables_sql)
 conn.no_commit_execute(create_tables_sql)
-
-# def table_creation(database: str):
-#    connectdb = database_connection(database=database)
-#    connectdb.autocommit = True
-#    cursor = connectdb.cursor()
-#    create_items_table = \
-#    """
-#    DROP TABLE IF EXISTS items cascade;
-#    CREATE TABLE Items(
-#       item_id SERIAL,
-#       item_name VARCHAR NOT NULL UNIQUE,
-#       item_price DECIMAL,
-#       PRIMARY KEY(item_id)
-#    );"""
-#    create_stores_table = \
-#       """
-#       DROP TABLE IF EXISTS stores cascade;
-#       CREATE TABLE Stores(
-#             store_id SERIAL,
-#             store_name VARCHAR NOT NULL UNIQUE,
-#             PRIMARY KEY(store_id)
-#       );"""
-#    create_orders_table = \
-#       """
-#       DROP TABLE IF EXISTS orders cascade;
-#       CREATE TABLE Orders(
-#          transaction_id VARCHAR,
-#          item_id INTEGER,
-#          quantity INTEGER,
-#          PRIMARY KEY(transaction_id, item_id),
-#          CONSTRAINT fk_transactions
-#             FOREIGN KEY(transaction_id)
-#                REFERENCES Transactions(transaction_id) ON UPDATE CASCADE,
-#          CONSTRAINT fk_items
-#             FOREIGN KEY(item_id)
-#                REFERENCES Items(item_id) ON UPDATE CASCADE
-#       );"""
-#    # PostgreSQL uses the  yyyy-mm-dd
-#    create_transactions_table = \
-#       """
-#       DROP TABLE IF EXISTS transactions cascade;
-#       CREATE TABLE Transactions(
-#             transaction_id VARCHAR NOT NULL,
-#             date_time TIMESTAMP, 
-#             store_id INTEGER,
-#             cash_or_card VARCHAR NOT NULL,
-#             total_price DECIMAL,
-#             PRIMARY KEY(transaction_id),
-#             CONSTRAINT fk_stores
-#                FOREIGN KEY(store_id)
-#                   REFERENCES Stores(store_id) ON UPDATE CASCADE
-#             );"""
-#    print("creating items table...")
-#    cursor.execute(create_items_table)
-#    print('success')
-#    print("creating stores table...")
-#    cursor.execute(create_stores_table)
-#    print('success')
-#    print("creating transactions table...")
-#    cursor.execute(create_transactions_table)
-#    print('success')
-#    print("creating orders table...")
-#    cursor.execute(create_orders_table)
-#    print('success')
-#    connectdb.close()
-# database_connection()
-
-# table_creation(database="root")
