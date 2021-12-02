@@ -5,6 +5,10 @@ services:
     container_name: mysql_container
     environment:
       MYSQL_ROOT_PASSWORD: "${mysql_pass}"
+    command:
+      - "mysqld"
+      - "--local_infile=ON"
+      # - "--secure_file_priv=''"
     ports:
       - "3306:3306"
     volumes:
